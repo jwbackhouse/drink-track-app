@@ -22,22 +22,7 @@ router.post('/drinks', auth, async(req, res) => {
 
 router.get('/drinks', auth, async(req, res) => {
   try {
-    // Approach 1
-    // const drinks = await Drink.find({
-    //   $or: [
-    //     { owner: req.user._id },
-    //     { owner: { $exists: false } } // include drinks with no owner
-    //   ]
-    // });
-
-    // Approach 2 - using populate method
-    const user = await User.findById(req.user._id);
-    await user.populate('drinks').execPopulate();
-    const systemDrinks = await Drink.find({ owner: { $exists: false } });
-    const drinks = systemDrinks.concat(user.drinks);
-
-    if (drinks.length === 0) res.status(404).send({ error: 'No drinks found.' });
-
+    const drinks = req.user.ownDrinks;
     res.send(drinks);
   }
   catch (err) {
@@ -47,20 +32,30 @@ router.get('/drinks', auth, async(req, res) => {
 
 router.get('/drinks/:id', auth, async(req, res) => {
   const drinkId = req.params.id;
-  const ownerId = req.user._id;
+  const drinks = req.user.ownDrinks;
 
   try {
-    const drink = await Drink.findOne({
-      $or: [
-        { owner: ownerId },
-        { owner: { $exists: false } } // include drinks with no owner
-      ],
-      _id: drinkId,
-    });
+    const drink = await drinks.findOne({ _id: drinkId });
 
-    if (drink.length === 0) return res.status(404).send({ error: 'Drink not found.' });
+    drink
+      ? res.send(drink)
+      : res.status(404).send({ error: 'Drink not found' });
 
-    res.send(drink);
+
+  // const ownerId = req.user._id;
+
+  // try {
+  //   const drink = await Drink.findOne({
+  //     $or: [
+  //       { owner: ownerId },
+  //       { owner: { $exists: false } } // include drinks with no owner
+  //     ],
+  //     _id: drinkId,
+  //   });
+
+  //   if (drink.length === 0) return res.status(404).send({ error: 'Drink not found.' });
+
+  //   res.send(drink);
   }
   catch (err) {
     res.status(500).send(err);
