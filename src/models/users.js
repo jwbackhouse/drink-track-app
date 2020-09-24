@@ -4,11 +4,11 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { Drink, drinkSchema } = require('./drinks.js');
 
-// NB need to explicitly create schema in order to use middleware
 const opts = {
   timestamps: true,
 };
 
+// NB need to explicitly create schema in order to use middleware
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema({
   tokens: [{
     token: {
       type: String,
-      // required: true,
+      required: true,
     },
   }],
   ownDrinks: [drinkSchema],
@@ -74,20 +74,15 @@ userSchema.methods.toJSON = function() {
 userSchema.statics.findUserCreds = async(email, password) => {
   const user = await User.findOne({ email });
 
-  if (!user) {
-    throw new Error('Unable to login');
-  }
+  if (!user) throw new Error('Unable to login');
 
   const isMatch = await bcrypt.compare(password, user.password);
-
-  if (!isMatch) {
-    throw new Error('Unable to login');
-  }
+  if (!isMatch) throw new Error('Unable to login');
 
   return user;
 };
 
-// Document middlewarecalled on different functions
+// Document middleware called on save()
 userSchema.pre('save', async function(next) {
   const user = this;
 
@@ -121,22 +116,6 @@ userSchema.pre('remove', async function(next) {
     console.log(err);
   }
 });
-
-// userSchema.pre('init', doc => {
-//   console.log(doc)
-//   // try {
-//   //   console.log(doc);
-//   //   doc.drinks = [];
-
-//   //   const systemDrinks = await Drink.find({});
-//   //   systemDrinks.forEach(drink => doc.drinks.push(drink));
-
-//   // }
-//   // catch (err) {
-//   //   console.log(err);
-//   // }
-// });
-
 
 const User = mongoose.model('User', userSchema);
 
