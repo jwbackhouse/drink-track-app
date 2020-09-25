@@ -1,8 +1,22 @@
 const express = require('express');
+const multer = require('multer');
 const User = require('../models/users.js');
 const auth = require('../middleware/auth.js');
 
 const router = new express.Router();
+const upload = multer({
+  // dest: 'avatars/',  // if no dest specified, buffer is passed to next function
+  limits: {
+    fileSize: 1000000,
+  },
+  fileFilter(req, file, cb) {
+    if (!file.originalname.match(/\.(jpe?g|png)$/)) {
+      return cb(new Error('Please choose a jpg or png file.'));
+    }
+
+    cb(null, true);
+  },
+});
 
 router.post('/users', async(req, res) => {
   try {
@@ -12,9 +26,8 @@ router.post('/users', async(req, res) => {
     await newUser.save();
 
     res.status(201).send({ newUser, token });
-  }
-  catch (err) {
-    res.status(400).send(err.message);
+  } catch (err) {
+    res.status(400).send({ error: err.message });
   }
 });
 
@@ -24,10 +37,9 @@ router.post('/users/login', async(req, res) => {
     const token = await user.genAuthToken();
 
     res.send({ user, token });
-  }
-  catch (err) {
+  } catch (err) {
     console.log(err);
-    res.status(400).send(err.message);
+    res.status(400).send({ error: err.message });
   }
 });
 
@@ -40,9 +52,8 @@ router.post('/users/logout', auth, async(req, res) => {
     await req.user.save();
 
     res.send();
-  }
-  catch (err) {
-    res.status(500).send();
+  } catch (err) {
+    res.status(500).send({ error: err.message });
   }
 });
 
@@ -52,14 +63,42 @@ router.post('/users/logout-all', auth, async(req, res) => {
     await req.user.save();
 
     res.send();
+  } catch (err) {
+    res.status(500).send({ error: err.message });
   }
-  catch (err) {
-    res.status(500).send();
+});
+
+router.post('/users/me/avatar', auth, upload.single('avatar'), async(req, res) => {
+  const avatar = req.file.buffer;
+  req.user.avatar = avatar;
+
+  try {
+    await req.user.save();
+    res.send();
+  } catch (err) {
+    req.status(500).send({ error: err.message });
   }
-})
+}, (err, req, res, next) => { // Express error handling - have to pass all 4 args
+  res.status(400).send({ error: err.message });
+});
 
 router.get('/users/me', auth, (req, res) => {
   res.send(req.user);
+});
+
+router.get('/users/:id/avatar', async(req, res) => {
+  try {
+    const _id = req.params.id;
+    const user = await User.findById(_id);
+
+    if (!user) throw new Error('User not found.');
+
+    res.set('Content-Type', 'image/jpeg');  // Configure response headers
+    res.send(user.avatar);
+  }
+  catch (err) {
+    res.status(404).send({ error: err.message });
+  }
 });
 
 router.patch('/users/me', auth, async(req, res) => {
@@ -74,9 +113,8 @@ router.patch('/users/me', auth, async(req, res) => {
     await req.user.save();
 
     res.send(req.user);
-  }
-  catch (err) {
-    res.status(400).send(err);
+  } catch (err) {
+    res.status(400).send({ error: err.message });
   }
 });
 
@@ -84,9 +122,18 @@ router.delete('/users/me', auth, async(req, res) => {
   try {
     await req.user.remove();
     res.send(req.user);
+  } catch (err) {
+    res.status(500).send({ error: err.message });
   }
-  catch (err) {
-    res.status(500).send(err);
+});
+
+router.delete('/users/me/avatar', auth, async(req, res) => {
+  try {
+    req.user.avatar = undefined;
+    await req.user.save();
+    res.send();
+  } catch (err) {
+    res.status(500).send({ error: err.message });
   }
 });
 
@@ -96,9 +143,8 @@ router.get('/users', async(req, res) => {
   try {
     const users = await User.find({});
     res.send(users);
-  }
-  catch (err) {
-    res.status(404).send();
+  } catch (err) {
+    res.status(404).send({ error: err.message });
   }
 });
 
@@ -108,9 +154,8 @@ router.delete('/users', async(req, res) => {
     deleted.n === 0 ?
       res.status(404).send({ error: 'No users to delete.' }) :
       res.send({ usersDeleted: deleted.n });
-  }
-  catch (err) {
-    res.status(404).send(err);
+  } catch (err) {
+    res.status(404).send({ error: err.message });
   }
 });
 
