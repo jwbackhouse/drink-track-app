@@ -78,4 +78,16 @@ router.delete('/drinks/:id', auth, async(req, res) => {
   res.send(deleted);
 });
 
+
+// FOR DEV PURPOSES ONLY
+router.delete('/drinks', async(req, res) => {
+  try {
+    await Drink.deleteMany({});
+    res.send();
+  }
+  catch (err) {
+    res.status(500).send();
+  }
+});
+
 module.exports = router;
