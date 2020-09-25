@@ -19,7 +19,17 @@ router.post('/drinks', auth, async(req, res) => {
 
 router.get('/drinks', auth, async(req, res) => {
   try {
-    const drinks = req.user.ownDrinks;
+    // /drinks?cat=beer&cat=wine
+    const category = req.query.cat;
+    const userDrinks = req.user.ownDrinks;
+
+    const drinks = userDrinks.reduce((init, drink) => {
+      category.forEach(cat => {
+        if (drink.category === cat) init.push(drink);
+      });
+      return init;
+    }, []);
+
     res.send(drinks);
   } catch (err) {
     res.status(500).send(err);
