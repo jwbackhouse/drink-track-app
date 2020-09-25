@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const { Drink } = require('../models/drinks.js');
 const auth = require('../middleware/auth.js');
 
@@ -66,18 +67,15 @@ router.patch('/drinks/:id', auth, async(req, res) => {
 });
 
 router.delete('/drinks/:id', auth, async(req, res) => {
-  const drinkId = req.params.id;
+  const drinkId = (req.params.id);
   const drinks = req.user.ownDrinks;
 
-  try {
-    // Check user owns the drink
-    const drink = drinks.id(drinkId);
-    drink ?
-      res.send(drink) :
-      res.status(404).send({ error: 'Drink not found.' });
-  } catch (err) {
-    res.status(500).send(err.message);
-  }
+  // Check user owns the drink
+  const idx = drinks.findIndex(drink => drink._id.toString() === drinkId);
+  if (idx === -1) return res.status(404).send({ error: 'Drink not found.' });
+
+  const deleted = drinks.splice(idx, 1);
+  res.send(deleted);
 });
 
 module.exports = router;
