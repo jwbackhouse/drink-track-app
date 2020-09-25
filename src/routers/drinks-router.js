@@ -1,5 +1,4 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const { Drink } = require('../models/drinks.js');
 const auth = require('../middleware/auth.js');
 
