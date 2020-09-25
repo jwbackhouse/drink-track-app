@@ -62,19 +62,6 @@ router.get('/users/me', auth, (req, res) => {
   res.send(req.user);
 });
 
-// ** Redundant **
-// router.get('/users/:id', (req, res) => {
-//   const _id = req.params.id;
-//   User.findById(_id)
-//     .then(user => {
-//       if (!user) {
-//         return res.status(404).send('User not found');
-//       }
-//       res.send(user);
-//     })
-//     .catch(err => res.status(500).send(err));
-// });
-
 router.patch('/users/me', auth, async(req, res) => {
   const updateFields = Object.keys(req.body);
   const allowedUpdates = ['name', 'email', 'password'];
