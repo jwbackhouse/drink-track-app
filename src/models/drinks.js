@@ -10,6 +10,11 @@ const drinkSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
+  category: {
+    type: String,
+    enum: ['wine', 'beer', 'cider', 'spirits', 'other'],
+    required: true,
+  },
   abv: {
     type: Number,
     required: true,
