@@ -44,12 +44,12 @@ const userSchema = new mongoose.Schema({
   ownDrinks: [drinkSchema],
 }, opts);
 
-// Configure virtual field to link drinks with users
-userSchema.virtual('drinks', {
-  ref: 'Drink',
-  localField: '_id',
-  foreignField: 'owner',
-});
+// // Configure virtual field to link drinks with users
+// userSchema.virtual('drinks', {
+//   ref: 'Drink',
+//   localField: '_id',
+//   foreignField: 'owner',
+// });
 
 // Create instance method (i.e. on individual users) to generate JWT
 userSchema.methods.genAuthToken = async function() {
