@@ -8,7 +8,7 @@ const router = new express.Router();
 const upload = multer({
   // dest: 'avatars/',  // if no dest specified, buffer is passed to next function
   limits: {
-    fileSize: 1000000,
+    fileSize: 1000000,  // number of bytes
   },
   fileFilter(req, file, cb) {
     if (!file.originalname.match(/\.(jpe?g|png)$/)) {
