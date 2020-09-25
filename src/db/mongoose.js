@@ -7,3 +7,7 @@ mongoose.connect(cnxURL, {
   useCreateIndex: true,
   useUnifiedTopology: true,
 });
+
+// Bind MongoDB errors to console
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
