@@ -17,18 +17,24 @@ router.post('/drinks', auth, async(req, res) => {
   }
 });
 
+// NB Mongoose provides easy ways to deal with query string if using populate
+// (see Udemy course)
+// GET /drinks?cat=beer&cat=wine
 router.get('/drinks', auth, async(req, res) => {
   try {
-    // /drinks?cat=beer&cat=wine
+    let drinks = req.user.ownDrinks;
     const category = req.query.cat;
-    const userDrinks = req.user.ownDrinks;
 
-    const drinks = userDrinks.reduce((init, drink) => {
-      category.forEach(cat => {
-        if (drink.category === cat) init.push(drink);
-      });
-      return init;
-    }, []);
+    if (category) {
+      drinks = drinks.reduce((init, drink) => {
+        category.forEach(cat => {
+          if (drink.category === cat) init.push(drink);
+        });
+        return init;
+      }, []);
+    }
+
+    // const sorted
 
     res.send(drinks);
   } catch (err) {
