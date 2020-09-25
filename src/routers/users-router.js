@@ -70,13 +70,6 @@ router.patch('/users/me', auth, async(req, res) => {
   if (!isValidUpdate) return res.status(400).send({ error: 'Invalid operation' });
 
   try {
-    // NB this method bypasses any middleware, hence refactored below
-    // const options = {
-    //   new: true,
-    //   runValidators: true,
-    // };
-    // const user = await User.findByIdAndUpdate(id, req.body, options);
-
     updateFields.forEach(field => req.user[field] = req.body[field]);
     await req.user.save();
 
@@ -89,11 +82,6 @@ router.patch('/users/me', auth, async(req, res) => {
 
 router.delete('/users/me', auth, async(req, res) => {
   try {
-    // Original syntax
-    // const _id = req.user._id;
-    // const user = await User.findByIdAndDelete(_id);
-    // if (!user) res.status(404).send();
-
     await req.user.remove();
     res.send(req.user);
   }
