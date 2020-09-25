@@ -1,5 +1,6 @@
 const express = require('express');
 const multer = require('multer');
+const sharp = require('sharp');
 const User = require('../models/users.js');
 const auth = require('../middleware/auth.js');
 
@@ -69,14 +70,17 @@ router.post('/users/logout-all', auth, async(req, res) => {
 });
 
 router.post('/users/me/avatar', auth, upload.single('avatar'), async(req, res) => {
-  const avatar = req.file.buffer;
-  req.user.avatar = avatar;
-
   try {
+    const buffer = await sharp(req.file.buffer)
+      .png()
+      .resize(250, 250)
+      .toBuffer();
+
+    req.user.avatar = buffer;
     await req.user.save();
     res.send();
   } catch (err) {
-    req.status(500).send({ error: err.message });
+    res.status(500).send({ error: err.message });
   }
 }, (err, req, res, next) => { // Express error handling - have to pass all 4 args
   res.status(400).send({ error: err.message });
@@ -93,10 +97,9 @@ router.get('/users/:id/avatar', async(req, res) => {
 
     if (!user) throw new Error('User not found.');
 
-    res.set('Content-Type', 'image/jpeg');  // Configure response headers
+    res.set('Content-Type', 'image/png'); // Configure response headers
     res.send(user.avatar);
-  }
-  catch (err) {
+  } catch (err) {
     res.status(404).send({ error: err.message });
   }
 });
