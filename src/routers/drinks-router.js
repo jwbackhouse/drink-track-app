@@ -6,14 +6,13 @@ const router = new express.Router();
 
 router.get('/drinks', auth, drink_controller.all_get);
 
-router.post('/add-drink', auth, drink_controller.post);
+router.get('/add-drink', drink_controller.create_get);
+router.post('/add-drink', drink_controller.create_post);
 
 router.delete('/drinks/all', drink_controller.all_delete); // FOR DEV PURPOSES ONLY
 
 router.get('/drinks/:id', auth, drink_controller.get);
-
 router.patch('/drinks/:id', auth, drink_controller.patch);
-
 router.delete('/drinks/:id', auth, drink_controller.delete);
 
 

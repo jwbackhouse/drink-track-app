@@ -1,14 +1,24 @@
 const { Drink } = require('../models/drinks.js');
 
-exports.post = async(req, res) => {
+exports.create_get = (req, res) => {
+  res.render('create_form', { title: 'Add a drink' });
+};
+
+exports.create_post = async(req, res) => {
   try {
     const newDrink = new Drink(req.body);
+
+    if (newDrink.name === '') throw new Error('Please add a name');
+    // Check for duplicates
+
     req.user.ownDrinks.push(newDrink);
     await req.user.save();
 
-    res.status(201).send(newDrink);
+    // res.status(201).send(newDrink);
+    res.redirect('/drinks');
   } catch (err) {
-    res.status(400).send(err.message);
+    // res.status(400).send(err.message);
+    res.render('create_form', { title: 'Add a drink', error: err.message });
   }
 };
 
