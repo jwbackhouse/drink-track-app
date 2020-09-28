@@ -50,9 +50,11 @@ exports.all_get = async(req, res) => {
       if (order === 'desc') drinks.reverse();
     }
 
-    res.send(drinks);
+    // res.send(drinks);
+    res.render('drinks', { title: 'Drinks', data: drinks });
   } catch (err) {
-    res.status(500).send(err);
+    // res.status(500).send({ error: err.message });
+    res.render('drinks', { title: 'Drinks', error: err });
   }
 };
 

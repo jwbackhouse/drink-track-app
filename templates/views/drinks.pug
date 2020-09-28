@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h1= title
+  p Here are all your #[b drinks]
+
+  if error
+    p Doh, something went wrong
+
+  else
+    ul
+      li #[strong Beer:] !{data}

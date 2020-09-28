@@ -1,7 +1,5 @@
 const express = require('express');
 const multer = require('multer');
-const sharp = require('sharp');
-const User = require('../models/users.js');
 const auth = require('../middleware/auth.js');
 const user_controller = require('../controllers/users.js');
 
