@@ -4,10 +4,9 @@ const auth = require('../middleware/auth.js');
 
 const router = new express.Router();
 
-router.post('/drinks', auth, drink_controller.post);
+router.get('/drinks', auth, drink_controller.all_get);
 
-// router.get('/drinks', auth, drink_controller.all_get);
-router.get('/drinks', drink_controller.all_get);
+router.post('/add-drink', auth, drink_controller.post);
 
 router.delete('/drinks/all', drink_controller.all_delete); // FOR DEV PURPOSES ONLY
 
