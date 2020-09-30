@@ -17,29 +17,12 @@ app.set('view engine', 'pug');
 app.set('views', viewsPath);
 // hbs.registerPartials = partialsPath;
 app.use(express.static(publicPath));
+app.use(express.urlencoded({
+  extended: true
+}));
 app.use(express.json()); // Configure express to auto-parse JSON
 app.use(userRouter);
 app.use(drinkRouter);
-
-
-// // Render HBS files
-// app.get('', async(req, res) => {
-//   try {
-//     const drinks = await Drink.find({});
-
-//     // Render HBS file. Pass an object as 2nd arg to pass variables into the template
-//     res.render('index', {
-//       title: 'The Drink Track App',
-//       drinks,
-//     });
-//   }
-//   catch (err) {
-//     res.render('index', {
-//       title: 'The Drink Track App',
-//       drinks: [],
-//     });
-//   }
-// });
 
 app.listen(port, () => {
   console.log('App is running on port ' + port);

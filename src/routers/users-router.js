@@ -20,7 +20,8 @@ const upload = multer({
 
 router.post('/users', user_controller.index);
 
-router.post('/users/login', user_controller.login);
+router.get('/users/login', user_controller.login_get);
+router.post('/users/login', user_controller.login_post);
 
 router.post('/users/logout', auth, user_controller.logout);
 

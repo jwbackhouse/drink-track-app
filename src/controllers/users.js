@@ -14,15 +14,22 @@ exports.index = async(req, res) => {
   }
 };
 
-exports.login = async(req, res) => {
+exports.login_get = (req, res) => {
+  res.render('login_form', { title: 'Login' });
+};
+
+exports.login_post = async(req, res) => {
+  console.log(req.body);
   try {
     const user = await User.findUserCreds(req.body.email, req.body.password);
     const token = await user.genAuthToken();
 
-    res.send({ user, token });
+    // res.send({ user, token });
+    res.redirect('/drinks');
   } catch (err) {
-    console.log(err);
-    res.status(400).send({ error: err.message });
+    console.log('login_post err:', err);
+    res.render('login_form', { title: 'Login', email: req.body.email, error: err.message });
+    // res.status(400).send({ error: err.message });
   }
 };
 
