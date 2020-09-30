@@ -7,7 +7,7 @@ block content
       label(for='name') Name:
       input#name.form-control(type='text' placeholder='Name' name='name' value=(undefined===drink ? '' : drink.name))
       label(for='description') Description:
-      input#description.form-control(type='text' placeholder='(Optional)' name='desc' value=(undefined===drink ? '' : drink.description))
+      input#description.form-control(type='text' placeholder='(Optional)' name='description' value=(undefined===drink ? '' : drink.description))
       label(for='category') Category:
       select#cat.form-control(name='category' required value=(undefined===drink ? '' : drink.category))
         option(value='beer') Beer
@@ -18,7 +18,7 @@ block content
       label(for='size') Size (ml):
       input#size.form-control(type='number' placeholder=0 name='size' value=(undefined===drink ? '' : drink.size))
       label(for='price') Price:
-      input#price.form-control(type='number' placeholder=0 name='price' value=(undefined===drink ? '' : drink.price))
+      input#price.form-control(type='number' placeholder=0 name='price' value=(undefined===drink ? '' : drink.price) step='0.1')
     button.btn.btn-primary(type='submit') Add
 
   if error

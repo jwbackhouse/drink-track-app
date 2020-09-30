@@ -1,7 +1,7 @@
 extends ../layouts/layout
 
 block content
-  h1 Add a new drink
+  h1 The bar
   p Here are all your drinks
 
   if error
@@ -10,10 +10,12 @@ block content
   else
     - const categories = [...new Set(data.map(drink => drink.category))];
     each cat in categories
-      h3= cat
+      h3= cat[0].toUpperCase() + cat.slice(1).toLowerCase()
       ul
         - const drinks = data.filter(drink => drink.category === cat)
         each drink in drinks
-          li= drink.name
+          - const description = drink.description ? ` - ${drink.description.toLowerCase()}` : ''
+          li #{drink.name}
+            em #{description}
 
   a(href='/add-drink') Add a drink
