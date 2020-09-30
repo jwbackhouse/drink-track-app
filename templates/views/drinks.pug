@@ -15,7 +15,9 @@ block content
         - const drinks = data.filter(drink => drink.category === cat)
         each drink in drinks
           - const description = drink.description ? ` - ${drink.description.toLowerCase()}` : ''
-          li #{drink.name}
+          - const url = `/drinks/${drink._id}`
+          li
+            a(href=url) #{drink.name}
             em #{description}
 
   a(href='/add-drink') Add a drink
