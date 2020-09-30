@@ -1,12 +1,19 @@
 extends ../layouts/layout
 
 block content
-  h1= title
-  p Here are all your #[b drinks]
+  h1 Add a new drink
+  p Here are all your drinks
 
   if error
     p Doh, something went wrong
 
   else
-    ul
-      li #[strong Beer:] !{data}
+    - const categories = [...new Set(data.map(drink => drink.category))];
+    each cat in categories
+      h3= cat
+      ul
+        - const drinks = data.filter(drink => drink.category === cat)
+        each drink in drinks
+          li= drink.name
+
+  a(href='/add-drink') Add a drink

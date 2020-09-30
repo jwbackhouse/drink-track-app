@@ -6,8 +6,8 @@ const router = new express.Router();
 
 router.get('/drinks', auth, drink_controller.all_get);
 
-router.get('/add-drink', drink_controller.create_get);
-router.post('/add-drink', drink_controller.create_post);
+router.get('/add-drink', auth, drink_controller.create_get);
+router.post('/add-drink', auth, drink_controller.create_post);
 
 router.delete('/drinks/all', drink_controller.all_delete); // FOR DEV PURPOSES ONLY
 

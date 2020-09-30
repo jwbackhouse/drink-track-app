@@ -1,7 +1,7 @@
 const { Drink } = require('../models/drinks.js');
 
 exports.create_get = (req, res) => {
-  res.render('create_form', { title: 'Add a drink' });
+  res.render('create_form');
 };
 
 exports.create_post = async(req, res) => {
@@ -9,7 +9,6 @@ exports.create_post = async(req, res) => {
     const newDrink = new Drink(req.body);
 
     if (newDrink.name === '') throw new Error('Please add a name');
-
     // TODO: Check for duplicates
 
     req.user.ownDrinks.push(newDrink);
@@ -19,7 +18,7 @@ exports.create_post = async(req, res) => {
     res.redirect('/drinks');
   } catch (err) {
     // res.status(400).send(err.message);
-    res.render('create_form', { title: 'Add a drink', error: err.message });
+    res.render('create_form', { error: err.message });
   }
 };
 
@@ -61,10 +60,8 @@ exports.all_get = async(req, res) => {
       if (order === 'desc') drinks.reverse();
     }
 
-    // res.send(drinks);
     res.render('drinks', { title: 'Drinks', data: drinks });
   } catch (err) {
-    // res.status(500).send({ error: err.message });
     res.render('drinks', { title: 'Drinks', error: err });
   }
 };

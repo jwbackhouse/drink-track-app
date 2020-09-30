@@ -11,7 +11,8 @@ exports.index = async(req, res) => {
     res.cookie('auth_token', token);
 
     // res.status(201).send({ newUser, token });
-    res.sendFile(path.resolve(__dirname, '..', '..', 'templates', 'views', 'private.html'));
+    // res.sendFile(path.resolve(__dirname, '..', '..', 'templates', 'views', 'private.html'));
+    res.render('drinks');
   } catch (err) {
     res.status(400).send({ error: err.message });
   }
@@ -26,12 +27,10 @@ exports.login_post = async(req, res) => {
     const user = await User.findUserCreds(req.body.email, req.body.password);
     const token = await user.genAuthToken();
 
-    // res.send({ user, token });
     res.cookie('auth_token', token);
-    res.sendFile(path.resolve(__dirname, '..', '..', 'templates', 'views', 'private.html'));
+    res.redirect('/drinks');
   } catch (err) {
     res.render('login_form', { title: 'Login', email: req.body.email, error: err.message });
-    // res.status(400).send({ error: err.message });
   }
 };
 
