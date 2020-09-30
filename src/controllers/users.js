@@ -1,14 +1,17 @@
 const sharp = require('sharp');
+const path = require('path');
 const User = require('../models/users.js');
 
 exports.index = async(req, res) => {
   try {
     const newUser = new User(req.body);
-    const token = await newUser.genAuthToken();
-
     await newUser.save();
 
-    res.status(201).send({ newUser, token });
+    const token = await newUser.genAuthToken();
+    res.cookie('auth_token', token);
+
+    // res.status(201).send({ newUser, token });
+    res.sendFile(path.resolve(__dirname, '..', '..', 'templates', 'views', 'private.html'));
   } catch (err) {
     res.status(400).send({ error: err.message });
   }
@@ -19,15 +22,14 @@ exports.login_get = (req, res) => {
 };
 
 exports.login_post = async(req, res) => {
-  console.log(req.body);
   try {
     const user = await User.findUserCreds(req.body.email, req.body.password);
     const token = await user.genAuthToken();
 
     // res.send({ user, token });
-    res.redirect('/drinks');
+    res.cookie('auth_token', token);
+    res.sendFile(path.resolve(__dirname, '..', '..', 'templates', 'views', 'private.html'));
   } catch (err) {
-    console.log('login_post err:', err);
     res.render('login_form', { title: 'Login', email: req.body.email, error: err.message });
     // res.status(400).send({ error: err.message });
   }

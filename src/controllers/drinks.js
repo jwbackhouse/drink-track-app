@@ -9,7 +9,8 @@ exports.create_post = async(req, res) => {
     const newDrink = new Drink(req.body);
 
     if (newDrink.name === '') throw new Error('Please add a name');
-    // Check for duplicates
+
+    // TODO: Check for duplicates
 
     req.user.ownDrinks.push(newDrink);
     await req.user.save();
