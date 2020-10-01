@@ -12,7 +12,7 @@ router.post('/add-drink', auth, drink_controller.create_post);
 router.delete('/drinks/all', drink_controller.all_delete); // FOR DEV PURPOSES ONLY
 
 router.get('/drinks/:id', auth, drink_controller.get);
-router.post('/drinks/:id', auth, drink_controller.post);
+router.put('/drinks/:id', auth, drink_controller.put);
 router.delete('/drinks/:id', auth, drink_controller.delete);
 
 

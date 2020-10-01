@@ -9,7 +9,7 @@ updateDrinkForm.addEventListener('submit', async(e) => {
 
   const url = window.location.href;
   await fetch(url, {
-      method: 'POST',
+      method: 'PUT',
       credentials: 'same-origin',
       body: data,
     })
