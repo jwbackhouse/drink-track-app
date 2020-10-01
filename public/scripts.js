@@ -13,5 +13,5 @@ updateDrinkForm.addEventListener('submit', async(e) => {
       credentials: 'same-origin',
       body: data,
     })
-    .then(window.location.href='/drinks');
+    .then(() => window.location.href='/drinks');
 });
