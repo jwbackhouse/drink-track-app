@@ -12,7 +12,9 @@ block content
     each cat in categories
       h3= cat[0].toUpperCase() + cat.slice(1).toLowerCase()
       ul
-        - const drinks = data.filter(drink => drink.category === cat)
+        -
+          const drinks = data.filter(drink => drink.category === cat)
+          drinks.sort((a,b) => a.name < b.name ? -1 : 1);
         each drink in drinks
           - const description = drink.description ? ` - ${drink.description.toLowerCase()}` : ''
           - const url = `/drinks/${drink._id}`
