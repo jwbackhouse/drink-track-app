@@ -1,8 +1,8 @@
 extends ../layouts/layout
 
 block content
-  h1= title
-  form(method='POST' action='')
+  h1 Edit drink
+  form#add-drink
     div.form-group
       label(for='name') Name:
       input#name.form-control(type='text' placeholder='Name' name='name' value=(undefined===drink ? '' : drink.name))
@@ -10,11 +10,11 @@ block content
       input#description.form-control(type='text' placeholder='(Optional)' name='description' value=(undefined===drink ? '' : drink.description))
       label(for='category') Category:
       select#cat.form-control(name='category' required)
-        option(value='beer') Beer
-        option(value='wine') Wine
-        option(value='cider') Cider
-        option(value='spirits') Spirits
-        option(value='other') Other
+        option(value='beer' selected=(drink.category==='beer')) Beer
+        option(value='wine' selected=(drink.category==='wine')) Wine
+        option(value='cider' selected=(drink.category==='cider')) Cider
+        option(value='spirits' selected=(drink.category==='spirits')) Spirits
+        option(value='other' selected=(drink.category==='other')) Other
       label(for='abv') ABV:
       input#abv.form-control(type='number' placeholder=0.00 name='abv' value=(undefined===drink ? '' : drink.abv) step='0.01')
       label(for='size') Size (ml):
@@ -25,3 +25,5 @@ block content
 
   if error
     p= error
+
+  script(src='/scripts.js')

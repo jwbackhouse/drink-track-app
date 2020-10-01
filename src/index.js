@@ -1,10 +1,11 @@
-const express = require('express');
 const path = require('path');
+const express = require('express');
 const cookieParser = require('cookie-parser');
-require('./db/mongoose.js');
+const bodyParser = require('body-parser');
 const drinkRouter = require('./routers/drinks.js');
 const userRouter = require('./routers/users.js');
 const authRouter = require('./routers/auth.js');
+require('./db/mongoose.js');
 
 const publicPath = path.join(__dirname, '../public');
 const viewsPath = path.join(__dirname, '../templates/views');

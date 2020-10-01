@@ -14,10 +14,8 @@ exports.create_post = async(req, res) => {
     req.user.ownDrinks.push(newDrink);
     await req.user.save();
 
-    // res.status(201).send(newDrink);
     res.redirect('/drinks');
   } catch (err) {
-    // res.status(400).send(err.message);
     res.render('create_form', { error: err.message });
   }
 };
@@ -74,34 +72,44 @@ exports.get = async(req, res) => {
     const drink = drinks.id(drinkId); // Mongoose method for finding subdoc by id
 
     drink ?
-      res.send(drink) :
-      res.status(404).send({ error: 'Drink not found' });
+      // res.send(drink) :
+      // res.status(404).send({ error: 'Drink not found' });
+      res.render('update_form', { drink, buttonCopy: 'Save' }) :
+      res.render('drinks', { error: 'Drink not found' });
   } catch (err) {
-    res.status(500).send(err.message);
+    // res.status(500).send(err.message);
+    res.render('drinks', { error: err.message });
   }
 };
 
-exports.patch = async(req, res) => {
+exports.post = async(req, res) => {
   const drinkId = req.params.id;
   const drinks = req.user.ownDrinks;
 
   try {
     // Check key can be updated
     const updateFields = Object.keys(req.body);
-    const allowedUpdates = ['name', 'description', 'abv', 'size', 'price'];
+    const allowedUpdates = ['name', 'description', 'category', 'abv', 'size', 'price'];
     const isValidUpdate = updateFields.every(update => allowedUpdates.includes(update));
-    if (!isValidUpdate) return res.status(400).send({ error: 'Invalid operation.' });
+    if (!isValidUpdate) {
+      console.log('invalid')
+      return res.status(400).send({ error: 'Invalid operation.' });
+    }
 
-    const drink = drinks.id(drinkId);
-    if (!drink) return res.status(404).send({ error: 'Drink not found' });
+    let drink = drinks.id(drinkId);
+    if (!drink) {
+      console.log('Drink not found');
+      return res.status(404).send({ error: 'Drink not found' });
+    }
 
     for (let field in req.body) {
       drink[field] = req.body[field];
+      console.log(field, req.body[field])
     }
 
     await req.user.save(); // NB have to save parent, not the subdoc
-    res.send(drink);
   } catch (err) {
+    console.log(err);
     res.status(400).send(err.message);
   }
 };
@@ -109,12 +117,12 @@ exports.patch = async(req, res) => {
 exports.delete = async(req, res) => {
   const drinkId = (req.params.id);
   const drinks = req.user.ownDrinks;
-
   // Check user owns the drink
   const idx = drinks.findIndex(drink => drink._id.toString() === drinkId);
   if (idx === -1) return res.status(404).send({ error: 'Drink not found.' });
 
   const deleted = drinks.splice(idx, 1);
+  await req.user.save();
   res.send(deleted);
 };
 
