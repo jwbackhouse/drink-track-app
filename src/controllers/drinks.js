@@ -1,7 +1,7 @@
 const { Drink } = require('../models/drinks.js');
 
 exports.create_get = (req, res) => {
-  res.render('create_form');
+  res.render('drink_form', { title: 'Add a drink', id: 'add-drink' });
 };
 
 exports.create_post = async(req, res) => {
@@ -16,7 +16,7 @@ exports.create_post = async(req, res) => {
 
     res.redirect('/drinks');
   } catch (err) {
-    res.render('create_form', { error: err.message });
+    res.render('drink_form', { error: err.message });
   }
 };
 
@@ -72,12 +72,14 @@ exports.get = async(req, res) => {
     const drink = drinks.id(drinkId); // Mongoose method for finding subdoc by id
 
     drink ?
-      // res.send(drink) :
-      // res.status(404).send({ error: 'Drink not found' });
-      res.render('update_form', { drink, buttonCopy: 'Save' }) :
+      res.render('drink_form', {
+        title: 'Edit details',
+        drink,
+        id: 'update-drink',
+        buttonCopy: 'Save',
+      }) :
       res.render('drinks', { error: 'Drink not found' });
   } catch (err) {
-    // res.status(500).send(err.message);
     res.render('drinks', { error: err.message });
   }
 };
@@ -92,7 +94,7 @@ exports.post = async(req, res) => {
     const allowedUpdates = ['name', 'description', 'category', 'abv', 'size', 'price'];
     const isValidUpdate = updateFields.every(update => allowedUpdates.includes(update));
     if (!isValidUpdate) {
-      console.log('invalid')
+      console.log('invalid');
       return res.status(400).send({ error: 'Invalid operation.' });
     }
 
@@ -104,7 +106,6 @@ exports.post = async(req, res) => {
 
     for (let field in req.body) {
       drink[field] = req.body[field];
-      console.log(field, req.body[field])
     }
 
     await req.user.save(); // NB have to save parent, not the subdoc
