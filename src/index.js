@@ -24,7 +24,7 @@ app.use(express.json()); // Configure express to auto-parse JSON
 app.use(cookieParser());
 app.use(userRouter);
 app.use(drinkRouter);
-app.use(authRouter);
+app.use(authRouter);  // Must come last - contains 404 route
 
 app.listen(port, () => {
   console.log('App is running on port ' + port);
