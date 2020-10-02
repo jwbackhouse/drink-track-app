@@ -17,18 +17,23 @@ block content
         p Doh, something went wrong
 
       else
-        - const categories = [...new Set(data.map(drink => drink.category))];
+        - const categories = [...new Set(userDrinks.map(drink => drink.category))];
         each cat in categories
           h3= cat[0].toUpperCase() + cat.slice(1).toLowerCase()
           -
-            const drinks = data.filter(drink => drink.category === cat)
+            const drinks = userDrinks.filter(drink => drink.category === cat)
             drinks.sort((a,b) => a.name < b.name ? -1 : 1);
           each drink in drinks
-            - const description = drink.description ? ` - ${drink.description.toLowerCase()}` : ''
-            - const url = `/drinks/${drink._id}`
+            -
+              const description = drink.description ? ` - ${drink.description.toLowerCase()}` : ''
+              const url = `/drinks/${drink._id}`
+              let matchedLog;
+              if (log) {
+                matchedLog = log.find(drink => drink.id.toString() === drink._id.toString())
+              }
             label(for=drink._id)
               #{drink.name}
               em #{drink.description}
-            input(type='number' name=drink._id id=drink._id min=0)
+            input(type='number' name=drink._id id=('ID'+drink._id) class='drink' min=0)
 
       input(type='submit' value='Go')

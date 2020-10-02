@@ -1,7 +1,7 @@
 const { Log } = require('../models/log.js');
 
 exports.get = (req, res) => {
-  res.render('log', { data: req.user.ownDrinks });
+  res.render('log', { userDrinks: req.user.ownDrinks });
 };
 
 exports.post = async(req, res) => {
@@ -42,6 +42,20 @@ exports.post = async(req, res) => {
   }
 };
 
+exports.date_get = (req, res) => {
+  const date = req.params.date;
+  const logs = req.user.log;
+
+  const result = logs.find(log => {
+    return log.date.toISOString().slice(0, 10) == date;
+  });
+
+  result ?
+    res.send(result.drinks) :
+    res.status(404).send();
+};
+
+// Helper functions
 const createDrinkArr = (IDs, data) => {
   let drinks = [];
 
