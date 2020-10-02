@@ -1,25 +1,5 @@
 const { Drink } = require('../models/drinks.js');
 
-exports.create_get = (req, res) => {
-  res.render('drink_form', { title: 'Add a drink', id: 'add-drink' });
-};
-
-exports.create_post = async(req, res) => {
-  try {
-    const newDrink = new Drink(req.body);
-
-    if (newDrink.name === '') throw new Error('Please add a name');
-    // TODO: Check for duplicates
-
-    req.user.ownDrinks.push(newDrink);
-    await req.user.save();
-
-    res.redirect('/drinks');
-  } catch (err) {
-    res.render('drink_form', { error: err.message });
-  }
-};
-
 // NB Mongoose provides easy ways to deal with query string if using populate
 // (see Udemy course)
 exports.all_get = async(req, res) => {
@@ -64,7 +44,27 @@ exports.all_get = async(req, res) => {
   }
 };
 
-exports.get = async(req, res) => {
+exports.create_get = (req, res) => {
+  res.render('drink_form', { title: 'Add a drink', id: 'add-drink' });
+};
+
+exports.create_post = async(req, res) => {
+  try {
+    const newDrink = new Drink(req.body);
+
+    if (newDrink.name === '') throw new Error('Please add a name');
+    // TODO: Check for duplicates
+
+    req.user.ownDrinks.push(newDrink);
+    await req.user.save();
+    res.send();
+    // res.redirect('/drinks');
+  } catch (err) {
+    res.render('drink_form', { error: err.message });
+  }
+};
+
+exports.drink_get = async(req, res) => {
   const drinkId = req.params.id;
   const drinks = req.user.ownDrinks;
 
@@ -84,7 +84,7 @@ exports.get = async(req, res) => {
   }
 };
 
-exports.put = async(req, res) => {
+exports.drink_put = async(req, res) => {
   const drinkId = req.params.id;
   const drinks = req.user.ownDrinks;
   const newDrink = req.body;
@@ -113,17 +113,23 @@ exports.put = async(req, res) => {
   }
 };
 
-exports.delete = async(req, res) => {
+exports.drink_delete = async(req, res) => {
   const drinkId = (req.params.id);
   const drinks = req.user.ownDrinks;
 
   // Check user owns the drink
-  const idx = drinks.findIndex(drink => drink._id.toString() === drinkId);
-  if (idx === -1) return res.status(404).send({ error: 'Drink not found.' });
+  try {
+    const idx = drinks.findIndex(drink => drink._id.toString() === drinkId);
+    if (idx === -1) return res.status(404).send({ error: 'Drink not found.' });
 
-  const deleted = drinks.splice(idx, 1);
-  await req.user.save();
-  res.send(deleted);
+    drinks.splice(idx, 1);
+    await req.user.save();
+    console.log('deleted');
+    res.render('drinks', { title: 'Drinks', data: drinks });
+  }
+  catch (error) {
+    res.render('drinks', { error });
+  }
 };
 
 
