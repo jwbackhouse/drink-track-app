@@ -3,6 +3,7 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { Drink, drinkSchema } = require('./drinks.js');
+const { logSchema } = require('./log.js');
 
 const opts = {
   timestamps: true,
@@ -42,6 +43,7 @@ const userSchema = new mongoose.Schema({
     },
   }],
   ownDrinks: [drinkSchema],
+  log: [logSchema],
 }, opts);
 
 // // Configure virtual field to link drinks with users

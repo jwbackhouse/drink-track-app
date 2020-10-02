@@ -23,7 +23,6 @@ const updateDrinkForm = document.getElementById('update-drink');
 if (updateDrinkForm) {
   updateDrinkForm.addEventListener('submit', async(e) => {
     e.preventDefault();
-
     const data = new URLSearchParams(new FormData(updateDrinkForm));
 
     const url = window.location.href;
@@ -42,7 +41,6 @@ const addDrinkForm = document.getElementById('add-drink');
 if (addDrinkForm) {
   addDrinkForm.addEventListener('submit', async(e) => {
     e.preventDefault();
-
     const data = new URLSearchParams(new FormData(addDrinkForm));
 
     const url = window.location.href;
@@ -57,16 +55,33 @@ if (addDrinkForm) {
 }
 
 // Handle date picker
-const nextDayBtn = document.getElementById('next-day');
-const prevDayBtn = document.getElementById('prev-day');
-const datePicker = document.getElementById('date');
-if (datePicker) {
+const logForm = document.getElementById('log-form');
+if (logForm) {
+  const datePicker = logForm.querySelector('#date');
+  const nextDayBtn = logForm.querySelector('#next-day');
+  const prevDayBtn = logForm.querySelector('#prev-day');
+
   nextDayBtn.addEventListener('click', (e) => {
     e.preventDefault();
     datePicker.stepUp();
   });
+
   prevDayBtn.addEventListener('click', (e) => {
     e.preventDefault();
     datePicker.stepDown();
-  })
+  });
+
+  logForm.addEventListener('submit', async(e) => {
+    e.preventDefault();
+    const data = new URLSearchParams(new FormData(logForm));
+
+    const url = window.location.href;
+    await fetch(url, {
+        method: 'POST',
+        credentials: 'same-origin',
+        body: data,
+      })
+      // .then(() => window.location.href = '/drinks')
+      .catch(err => alert('Something went wrong:' + err.message));
+  });
 }

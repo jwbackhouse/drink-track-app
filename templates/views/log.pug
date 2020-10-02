@@ -2,7 +2,7 @@ extends ../layouts/layout
 
 block content
   h1 Track your drinking
-  form
+  form#log-form
     div.form-group
       div
         - let today = new Date().toISOString().substr(0, 10);
@@ -12,4 +12,23 @@ block content
         button(id='next-day') >>
       label(for='no-drink') Nothing today?
       input(type='checkbox' id='no-drink' name='no-drink')
+
+      if error
+        p Doh, something went wrong
+
+      else
+        - const categories = [...new Set(data.map(drink => drink.category))];
+        each cat in categories
+          h3= cat[0].toUpperCase() + cat.slice(1).toLowerCase()
+          -
+            const drinks = data.filter(drink => drink.category === cat)
+            drinks.sort((a,b) => a.name < b.name ? -1 : 1);
+          each drink in drinks
+            - const description = drink.description ? ` - ${drink.description.toLowerCase()}` : ''
+            - const url = `/drinks/${drink._id}`
+            label(for=drink._id)
+              #{drink.name}
+              em #{drink.description}
+            input(type='number' name=drink._id id=drink._id min=0)
+
       input(type='submit' value='Go')
