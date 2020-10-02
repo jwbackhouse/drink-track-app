@@ -46,13 +46,6 @@ const userSchema = new mongoose.Schema({
   log: [logSchema],
 }, opts);
 
-// // Configure virtual field to link drinks with users
-// userSchema.virtual('drinks', {
-//   ref: 'Drink',
-//   localField: '_id',
-//   foreignField: 'owner',
-// });
-
 // Create instance method (i.e. on individual users) to generate JWT
 userSchema.methods.genAuthToken = async function() {
   const user = this;
@@ -107,18 +100,6 @@ userSchema.pre('save', async function(next) {
   }
   catch (err) {
     console.log(err.message);
-  }
-});
-
-// Delete user's drinks when their account is deleted
-userSchema.pre('remove', async function(next) {
-  try {
-    const user = this;
-    await Drink.deleteMany({ owner: user._id });
-    next();
-  }
-  catch (err) {
-    console.log(err);
   }
 });
 
