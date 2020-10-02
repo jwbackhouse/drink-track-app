@@ -12,8 +12,8 @@ if (deleteButtons.length > 0) {
         method: 'DELETE',
         credentials: 'same-origin',
       })
-        // .then(() => console.log('deleted' + e.target.name))
-        // .catch(err => alert('Something went wrong:' + err.message));
+        .then(() => window.location.reload())
+        .catch(err => alert('Something went wrong:' + err.message));
     });
   });
 }

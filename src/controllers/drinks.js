@@ -124,7 +124,6 @@ exports.drink_delete = async(req, res) => {
 
     drinks.splice(idx, 1);
     await req.user.save();
-    console.log('deleted');
     res.render('drinks', { title: 'Drinks', data: drinks });
   }
   catch (error) {
