@@ -9,9 +9,9 @@ if (deleteButtons.length > 0) {
       const url = window.location.href + '/' + id;
 
       fetch(url, {
-        method: 'DELETE',
-        credentials: 'same-origin',
-      })
+          method: 'DELETE',
+          credentials: 'same-origin',
+        })
         .then(() => window.location.reload())
         .catch(err => alert('Something went wrong:' + err.message));
     });
@@ -24,7 +24,7 @@ if (updateDrinkForm) {
   updateDrinkForm.addEventListener('submit', async(e) => {
     e.preventDefault();
 
-    const data = new URLSearchParams (new FormData(updateDrinkForm));
+    const data = new URLSearchParams(new FormData(updateDrinkForm));
 
     const url = window.location.href;
     await fetch(url, {
@@ -32,7 +32,7 @@ if (updateDrinkForm) {
         credentials: 'same-origin',
         body: data,
       })
-      .then(() => window.location.href='/drinks')
+      .then(() => window.location.href = '/drinks')
       .catch(err => alert('Something went wrong:' + err.message));
   });
 }
@@ -43,7 +43,7 @@ if (addDrinkForm) {
   addDrinkForm.addEventListener('submit', async(e) => {
     e.preventDefault();
 
-    const data = new URLSearchParams (new FormData(addDrinkForm));
+    const data = new URLSearchParams(new FormData(addDrinkForm));
 
     const url = window.location.href;
     await fetch(url, {
@@ -51,7 +51,22 @@ if (addDrinkForm) {
         credentials: 'same-origin',
         body: data,
       })
-      .then(() => window.location.href='/drinks')
+      .then(() => window.location.href = '/drinks')
       .catch(err => alert('Something went wrong:' + err.message));
   });
+}
+
+// Handle date picker
+const nextDayBtn = document.getElementById('next-day');
+const prevDayBtn = document.getElementById('prev-day');
+const datePicker = document.getElementById('date');
+if (datePicker) {
+  nextDayBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    datePicker.stepUp();
+  });
+  prevDayBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    datePicker.stepDown();
+  })
 }

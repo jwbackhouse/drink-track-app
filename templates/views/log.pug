@@ -1,0 +1,15 @@
+extends ../layouts/layout
+
+block content
+  h1 Track your drinking
+  form
+    div.form-group
+      div
+        - let today = new Date().toISOString().substr(0, 10);
+        label(for='date') Date
+        input(type='date' id='date' name='date' value=today)
+        button(id='prev-day') <<
+        button(id='next-day') >>
+      label(for='no-drink') Nothing today?
+      input(type='checkbox' id='no-drink' name='no-drink')
+      input(type='submit' value='Go')
