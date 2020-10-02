@@ -114,7 +114,7 @@ exports.drink_put = async(req, res) => {
 };
 
 exports.drink_delete = async(req, res) => {
-  const drinkId = (req.params.id);
+  const drinkId = req.params.id;
   const drinks = req.user.ownDrinks;
 
   // Check user owns the drink
