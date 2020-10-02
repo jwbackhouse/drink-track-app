@@ -1,11 +1,17 @@
 extends ../layouts/layout
 
+
 block content
+  -
+    let today = new Date().toISOString().substr(0, 10)
+    const todaysLog = log.find(entry => {
+      const entryDate = entry.date.toISOString().substr(0, 10);
+      return entryDate === today;
+    })
   h1 Track your drinking
   form#log-form
     div.form-group
       div
-        - let today = new Date().toISOString().substr(0, 10);
         label(for='date') Date
         input(type='date' id='date' name='date' value=today)
         button(id='prev-day') <<
@@ -27,13 +33,13 @@ block content
             -
               const description = drink.description ? ` - ${drink.description.toLowerCase()}` : ''
               const url = `/drinks/${drink._id}`
-              let matchedLog;
-              if (log) {
-                matchedLog = log.find(drink => drink.id.toString() === drink._id.toString())
+              let qty = 0;
+              for (let log of todaysLog.drinks) {
+                if (log.drinkId.toString() === drink._id.toString()) qty = log.quantity;
               }
             label(for=drink._id)
               #{drink.name}
               em #{drink.description}
-            input(type='number' name=drink._id id=('ID'+drink._id) class='drink' min=0)
+            input(type='number' name=drink._id id=('ID'+drink._id) class='drink' min=0 value=qty)
 
       input(type='submit' value='Go')

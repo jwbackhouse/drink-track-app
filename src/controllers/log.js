@@ -1,7 +1,10 @@
 const { Log } = require('../models/log.js');
 
 exports.get = (req, res) => {
-  res.render('log', { userDrinks: req.user.ownDrinks });
+  res.render('log', {
+    userDrinks: req.user.ownDrinks,
+    log: req.user.log,
+  });
 };
 
 exports.post = async(req, res) => {
