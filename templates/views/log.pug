@@ -33,9 +33,11 @@ block content
             -
               const description = drink.description ? ` - ${drink.description.toLowerCase()}` : ''
               const url = `/drinks/${drink._id}`
-              let qty = 0;
-              for (let log of todaysLog.drinks) {
-                if (log.drinkId.toString() === drink._id.toString()) qty = log.quantity;
+              let qty = '';
+              if (todaysLog) {
+                todaysLog.drinks.forEach(log => {
+                  if (log.drinkId.toString() === drink._id.toString()) qty = log.quantity;
+                })
               }
             label(for=drink._id)
               #{drink.name}

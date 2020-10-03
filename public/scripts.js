@@ -120,7 +120,7 @@ const triggerChange = (target) => {
 const updateInputs = (array, hasData) => {
   const allInputEls = logForm.querySelectorAll('.drink');
   if (!hasData) {
-    allInputEls.forEach(input => input.value = 0);
+    allInputEls.forEach(input => input.value = '');
     return;
   }
   for (let input of allInputEls) {
@@ -129,7 +129,7 @@ const updateInputs = (array, hasData) => {
         input.value = drink.quantity;
         break;
       }
-      input.value = 0;
+      input.value = '';
     }
   }
 };
