@@ -60,17 +60,17 @@ exports.date_get = (req, res) => {
 
 // Helper functions
 const createDrinkArr = (IDs, data) => {
-  let drinks = [];
+  let drinkArr = [];
 
   for (let i = 0; i < IDs.length; i++) {
     const drinkId = IDs[i];
     if (data[drinkId] > 0) {
-      drinks.push({
+      drinkArr.push({
         drinkId,
         quantity: data[drinkId],
       });
     }
   }
 
-  return drinks;
+  return drinkArr;
 };
