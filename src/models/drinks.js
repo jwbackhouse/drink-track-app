@@ -37,7 +37,7 @@ const drinkSchema = new mongoose.Schema({
 });
 
 drinkSchema.virtual('units').get(function() {
-  return this.abv * this.size / 10;
+  return Math.round((this.abv * this.size / 10) * 10) / 10;
 });
 
 const Drink = mongoose.model('Drink', drinkSchema);
