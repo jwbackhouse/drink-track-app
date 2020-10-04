@@ -1,0 +1,31 @@
+extends ../layouts/layout
+
+block content
+  h1 The scores on the doors
+
+  h2 Last 7 days
+  // This week by day
+  // Last week + diffs
+  // Separate tables for units / mix / spend
+
+  h3 Units
+  table.last-week
+    thead
+      tr
+        th Day
+        th Units
+        th Spend
+      tr
+        td TOTAL
+        td= data.total.units
+        td= data.total.spend
+
+      each entry in data.daily
+        tr
+          td= entry.day
+          td= entry.units
+          td= entry.spend
+
+  h2 Last 28 days
+  // By week
+  // Separate tables
