@@ -30,6 +30,12 @@ const drinkSchema = new mongoose.Schema({
     min: 0,
     default: 0,
   },
+  units: {
+    type: Number,
+    default: function() {
+      return this.abv * this.size / 10;
+    },
+  },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

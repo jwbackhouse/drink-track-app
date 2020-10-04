@@ -13,7 +13,7 @@ const opts = {
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
+    // required: true,
     trim: true,
   },
   password: {
@@ -93,7 +93,9 @@ userSchema.pre('save', async function(next) {
     // Add 'system drinks' to user document when user created
     if (user.isNew) {
       const systemDrinks = await Drink.find({});
-      systemDrinks.forEach(drink => user.ownDrinks.push(drink));
+      if (systemDrinks) {
+        systemDrinks.forEach(drink => user.ownDrinks.push(drink));
+      }
     }
 
     next();
