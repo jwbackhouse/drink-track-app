@@ -6,6 +6,7 @@ require('./db/mongoose.js');
 const drinkRouter = require('./routers/drinks.js');
 const userRouter = require('./routers/users.js');
 const logRouter = require('./routers/log.js');
+const statsRouter = require('./routers/stats.js');
 const authRouter = require('./routers/auth.js');
 
 const publicPath = path.join(__dirname, '../public');
@@ -26,6 +27,7 @@ app.use(cookieParser());
 app.use(userRouter);
 app.use(drinkRouter);
 app.use(logRouter);
+app.use(statsRouter);
 app.use(authRouter);  // Must come last - contains 404 route
 
 app.listen(port, () => {
