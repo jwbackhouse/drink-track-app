@@ -41,7 +41,7 @@ block content
               }
             label(for=drink._id)
               #{drink.name}
-              em #{drink.description}
+              em #{drink.description} (#{drink.units} units)
             input(type='number' name=drink._id id=('ID'+drink._id) class='drink' min=0 value=qty)
 
       input(type='submit' value='Go')
