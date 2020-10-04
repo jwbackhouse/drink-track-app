@@ -8,6 +8,7 @@ const { logSchema } = require('./log.js');
 const opts = {
   timestamps: true,
   toJSON: { virtuals: true }, // pass virtual fields into Express
+  toObject: { virtuals: true },
 };
 
 // NB need to explicitly create schema in order to use middleware
