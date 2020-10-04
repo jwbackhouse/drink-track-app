@@ -5,27 +5,31 @@ block content
   p Here are all your drinks
 
   if error
-    p Doh, something went wrong
+    p Doh, something went wrong.
 
-  if data.length > 0
-    - const categories = [...new Set(data.map(drink => drink.category))];
-    each cat in categories
-      h3= cat[0].toUpperCase() + cat.slice(1).toLowerCase()
-      ul
-        -
-          const drinks = data.filter(drink => drink.category === cat)
-          drinks.sort((a,b) => a.name < b.name ? -1 : 1);
-        each drink in drinks
-          - const description = drink.description ? ` - ${drink.description.toLowerCase()}` : ''
-          - const url = `/drinks/${drink._id}`
-          li
-            a(href=url) #{drink.name}
-            em #{description}
-            |
-            button(id=drink._id class='delete-btn') Delete
+  else if data
+    if data.length > 0
+      - const categories = [...new Set(data.map(drink => drink.category))];
+      each cat in categories
+        h3= cat[0].toUpperCase() + cat.slice(1).toLowerCase()
+        ul
+          -
+            const drinks = data.filter(drink => drink.category === cat)
+            drinks.sort((a,b) => a.name < b.name ? -1 : 1);
+          each drink in drinks
+            - const description = drink.description ? ` - ${drink.description.toLowerCase()}` : ''
+            - const url = `/drinks/${drink._id}`
+            li
+              a(href=url) #{drink.name}
+              em #{description}
+              |
+              button(id=drink._id class='delete-btn') Delete
 
-    a(href='/add-drink') Add a drink
+      a(href='/add-drink') Add a drink
+
+    else
+      p No drinks added yet
+      a(href='/add-drink') Add a drink
 
   else
-    p No drinks added yet
-    a(href='/add-drink') Add a drink
+    p Something unusual has gone wrong.
