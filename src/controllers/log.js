@@ -53,14 +53,13 @@ exports.post = async(req, res) => {
 exports.date_get = (req, res) => {
   const date = req.params.date;
   const logs = req.user.log;
-
   const result = logs.find(log => {
     return log.date.toISOString().slice(0, 10) == date;
   });
 
   result ?
     res.send(result.drinks) :
-    res.status(404).send();
+    res.send([{}]);
 };
 
 // Helper functions
