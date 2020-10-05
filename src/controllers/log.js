@@ -10,27 +10,32 @@ exports.get = (req, res) => {
 exports.post = async(req, res) => {
   const existingLog = req.user.log;
   const data = req.body;
+  console.log('post running')
 
   try {
     if (data.date === '') throw new Error('Please choose a date');
 
     let keys = Object.keys(req.body);
     let IDs = keys.slice(1);
-    const drinks = createDrinkArr(IDs, data);
-    const log = { date: data.date, drinks };
+    const loggedDrinks = createDrinkArr(IDs, data);
+    console.log(loggedDrinks)
+    const log = { date: data.date, drinks: loggedDrinks };
 
-    const idx = existingLog.findIndex(entry => {
+    const matchIdx = existingLog.findIndex(entry => {
       return entry.date.toISOString().slice(0, 10) === log.date;
     });
 
-    if (idx !== -1) {
-      const existingDrinks = existingLog[idx].drinks;
+    if (matchIdx !== -1) {
+      const existingDrinks = existingLog[matchIdx].drinks;
 
-      for (let i = 0; i < drinks.length; i++) {
-        const drinkIdx = existingDrinks.findIndex(drink => drink.drinkId.toString() === drinks[i].drinkId.toString());
+      for (let i = 0; i < loggedDrinks.length; i++) {
+        const drinkIdx = existingDrinks.findIndex(drink => {
+          return drink.drinkId.toString() === loggedDrinks[i].drinkId.toString();
+        });
+        console.log('loggedDrinks' + i + '--' + loggedDrinks[i].quantity);
         drinkIdx === -1 ?
-          existingDrinks.push(drinks[i]) :
-          existingDrinks[drinkIdx].quantity += +drinks[i].quantity;
+          existingDrinks.push(loggedDrinks[i]) :
+          existingDrinks[drinkIdx].quantity = +loggedDrinks[i].quantity;
       }
     } else {
       const newLog = new Log(log);
@@ -64,12 +69,11 @@ const createDrinkArr = (IDs, data) => {
 
   for (let i = 0; i < IDs.length; i++) {
     const drinkId = IDs[i];
-    if (data[drinkId] > 0) {
-      drinkArr.push({
-        drinkId,
-        quantity: data[drinkId],
-      });
-    }
+    const quantity = data[drinkId] === '' ? 0 : +data[drinkId];
+    drinkArr.push({
+      drinkId,
+      quantity,
+    });
   }
 
   return drinkArr;
