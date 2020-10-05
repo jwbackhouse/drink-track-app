@@ -87,15 +87,15 @@ exports.drink_get = async(req, res) => {
 exports.drink_put = async(req, res) => {
   const drinkId = req.params.id;
   const drinks = req.user.ownDrinks;
-  const newDrink = req.body;
+  const updates = req.body;
 
   try {
     // Check drink exists
-    const oldDrink = drinks.id(drinkId);
-    if (!oldDrink) return res.status(404).send({ error: 'Drink not found' });
+    const currentDrink = drinks.id(drinkId);
+    if (!currentDrink) return res.status(404).send({ error: 'Drink not found' });
 
     // Check key can be updated
-    const updateFields = Object.keys(newDrink);
+    const updateFields = Object.keys(updates);
     const allowedUpdates = ['name', 'description', 'category', 'abv', 'size', 'price'];
     const isValidUpdate = updateFields.every(update => allowedUpdates.includes(update));
     if (!isValidUpdate) {
@@ -103,8 +103,7 @@ exports.drink_put = async(req, res) => {
       return res.status(400).send({ error: 'Invalid operation.' });
     }
 
-    oldDrink.remove();
-    drinks.push(newDrink);
+    updateFields.forEach(field => currentDrink[field] = updates[field]);
     await req.user.save(); // NB have to save parent, not the subdoc
     res.send();
   } catch (err) {
