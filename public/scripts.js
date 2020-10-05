@@ -133,3 +133,28 @@ const updateInputs = (array, hasData) => {
     }
   }
 };
+
+// Handle logout click
+const logoutLink = document.getElementById('logout');
+if (logoutLink) {
+  logoutLink.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    try {
+      const check = window.confirm('Are you sure?');
+      if (check) {
+        const url = `${window.location.origin}/users/logout`;
+        fetch(url, {
+          credentials: 'same-origin',
+          method: 'POST',
+        })
+          .then((res) => {
+            if (res.ok) window.location.href='/';
+          })
+          .catch((err) => alert('Something went wrong: ' + err.message));
+      }
+    } catch(err) {
+      console.log(err.message);
+    }
+  });
+}
