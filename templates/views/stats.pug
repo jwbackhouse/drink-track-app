@@ -8,7 +8,6 @@ block content
   // Last week + diffs
   // Separate tables for units / mix / spend
 
-  h3 Units
   table.last-week
     thead
       tr
@@ -17,15 +16,25 @@ block content
         th Spend
       tr
         td TOTAL
-        td= data.total.units
-        td= data.total.spend
+        td= data.l7d.total.units
+        td= `£${data.l7d.total.spend}`
 
-      each entry in data.daily
+      each entry in data.l7d.daily
         tr
           td= entry.day
           td= entry.units
-          td= entry.spend
+          td= `£${entry.spend}`
 
   h2 Last 28 days
-  // By week
-  // Separate tables
+  table.last-month
+    thead
+      tr
+        th W/C
+        th Units
+        th Spend
+
+      each entry in data.l4w.weekly
+        tr
+          td= entry.week
+          td= entry.units
+          td= `£${entry.spend}`
