@@ -14,7 +14,7 @@ const auth = async(req, res, next) => {
     req.user = user;
     next();
   } catch (err) {
-    console.log('Auth error:', err.message);
+    console.log('Auth error:', err);
     res.redirect('/');
   }
 };
