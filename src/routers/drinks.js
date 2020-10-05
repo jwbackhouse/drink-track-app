@@ -9,7 +9,7 @@ router.get('/add-drink', auth, drink_controller.create_get);
 router.post('/add-drink', auth, drink_controller.create_post);
 router.delete('/drinks/all', drink_controller.all_delete); // FOR DEV PURPOSES ONLY
 router.get('/drinks/:id', auth, drink_controller.drink_get);
-router.put('/drinks/:id', auth, drink_controller.drink_put);
+router.post('/drinks/:id', auth, drink_controller.drink_put);
 router.delete('/drinks/:id', auth, drink_controller.drink_delete);
 
 module.exports = router;

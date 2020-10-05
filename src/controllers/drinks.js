@@ -48,19 +48,18 @@ exports.create_get = (req, res) => {
   res.render('drink_form', { title: 'Add a drink', id: 'add-drink' });
 };
 
+// TODO: Check for duplicates
 exports.create_post = async(req, res) => {
   try {
     const newDrink = new Drink(req.body);
 
     if (newDrink.name === '') throw new Error('Please add a name');
-    // TODO: Check for duplicates
 
     req.user.ownDrinks.push(newDrink);
     await req.user.save();
-    res.send();
-    // res.redirect('/drinks');
+    res.redirect('/drinks');
   } catch (err) {
-    res.render('drink_form', { error: err.message });
+    res.render('drink_form', { title: 'Add a drink', id: 'add-drink', error: err.message });
   }
 };
 
@@ -78,7 +77,7 @@ exports.drink_get = async(req, res) => {
         id: 'update-drink',
         buttonCopy: 'Save',
       }) :
-      res.render('drinks', { error: 'Drink not found' });
+      res.render('drinks', { error: 'No drinks found' });
   } catch (err) {
     res.render('drinks', { error: err.message });
   }
@@ -86,29 +85,36 @@ exports.drink_get = async(req, res) => {
 
 exports.drink_put = async(req, res) => {
   const drinkId = req.params.id;
-  const drinks = req.user.ownDrinks;
+  const ownDrinks = req.user.ownDrinks;
+  const currentDrink = ownDrinks.id(drinkId);
   const updates = req.body;
 
   try {
     // Check drink exists
-    const currentDrink = drinks.id(drinkId);
-    if (!currentDrink) return res.status(404).send({ error: 'Drink not found' });
+    if (!currentDrink) throw new Error('Drink not found');
 
     // Check key can be updated
     const updateFields = Object.keys(updates);
     const allowedUpdates = ['name', 'description', 'category', 'abv', 'size', 'price'];
     const isValidUpdate = updateFields.every(update => allowedUpdates.includes(update));
-    if (!isValidUpdate) {
-      console.log('invalid');
-      return res.status(400).send({ error: 'Invalid operation.' });
-    }
+    if (!isValidUpdate) throw new Error('Invalid operation');
 
-    updateFields.forEach(field => currentDrink[field] = updates[field]);
+    // Replace drink with object with same _id
+    currentDrink.remove();
+    let newDrink = { _id: drinkId };
+    updateFields.forEach(field => newDrink[field] = updates[field]);
+    ownDrinks.push(newDrink);
+
     await req.user.save(); // NB have to save parent, not the subdoc
-    res.send();
+    res.redirect('/drinks');
   } catch (err) {
-    console.log(err);
-    res.status(400).send(err.message);
+    res.render('drink_form', {
+      title: 'Edit details',
+      drink: currentDrink,
+      id: 'update-drink',
+      buttonCopy: 'Save',
+      error: err.message,
+    });
   }
 };
 
@@ -124,8 +130,7 @@ exports.drink_delete = async(req, res) => {
     drinks.splice(idx, 1);
     await req.user.save();
     res.render('drinks', { title: 'Drinks', data: drinks });
-  }
-  catch (error) {
+  } catch (error) {
     res.render('drinks', { error });
   }
 };

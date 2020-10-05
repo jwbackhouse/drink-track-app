@@ -18,42 +18,6 @@ if (deleteButtons.length > 0) {
   });
 }
 
-// Handle PUT request for updating drinks
-const updateDrinkForm = document.getElementById('update-drink');
-if (updateDrinkForm) {
-  updateDrinkForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const data = new URLSearchParams(new FormData(updateDrinkForm));
-
-    const url = window.location.href;
-    fetch(url, {
-        method: 'PUT',
-        credentials: 'same-origin',
-        body: data,
-      })
-      .then(() => window.location.href = '/drinks')
-      .catch(err => alert('Something went wrong:' + err.message));
-  });
-}
-
-// Handle POST request for adding drink
-const addDrinkForm = document.getElementById('add-drink');
-if (addDrinkForm) {
-  addDrinkForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const data = new URLSearchParams(new FormData(addDrinkForm));
-
-    const url = window.location.href;
-    fetch(url, {
-        method: 'POST',
-        credentials: 'same-origin',
-        body: data,
-      })
-      .then(() => window.location.href = '/drinks')
-      .catch(err => alert('Something went wrong:' + err.message));
-  });
-}
-
 // Handle log form
 const logForm = document.getElementById('log-form');
 if (logForm) {
