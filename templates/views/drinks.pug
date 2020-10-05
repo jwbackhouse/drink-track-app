@@ -9,7 +9,7 @@ block content
 
   else if data
     if data.length > 0
-      - const categories = [...new Set(data.map(drink => drink.category))];
+      - const categories = [...new Set(data.map(drink => drink.category))].sort();
       each cat in categories
         h3= cat[0].toUpperCase() + cat.slice(1).toLowerCase()
         ul
