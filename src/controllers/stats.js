@@ -89,6 +89,5 @@ const getWeeklyData = (today, log, userDrinks) => {
       });
     }
   }
-  console.log(result);
   return result;
 };
