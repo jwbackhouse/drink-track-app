@@ -2,8 +2,9 @@ extends ../layouts/login_layout
 
 block content
   h1 Sign up
-  a(href='/login') Login
-  form#register
+  a(href='/users/login') Login
+
+  form#register(method='POST' action='')
     div.form-group
       label(for='email') Email
       input(type='text' placeholder='Email address' name='email' value=(undefined===email ? '' : email))

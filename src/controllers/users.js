@@ -1,6 +1,9 @@
 const sharp = require('sharp');
-const path = require('path');
 const User = require('../models/users.js');
+
+exports.register_get = (req, res) => {
+  res.render('register_form', { title: 'Register' });
+};
 
 exports.register_post = async(req, res) => {
   try {
@@ -9,9 +12,13 @@ exports.register_post = async(req, res) => {
 
     const token = await newUser.genAuthToken();
     res.cookie('auth_token', token);
-    res.send();
+    res.redirect('/drinks');
   } catch (err) {
-    res.status(400).send({ error: err.message });
+    res.render('register_form', {
+      title: 'Register',
+      email: req.body.email,
+      error: err.message,
+    });
   }
 };
 
@@ -27,7 +34,11 @@ exports.login_post = async(req, res) => {
     res.cookie('auth_token', token);
     res.redirect('/drinks');
   } catch (err) {
-    res.render('login_form', { title: 'Login', email: req.body.email, error: err.message });
+    res.render('login_form', {
+      title: 'Login',
+      email: req.body.email,
+      error: err.message,
+    });
   }
 };
 

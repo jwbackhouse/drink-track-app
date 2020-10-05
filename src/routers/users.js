@@ -15,6 +15,7 @@ const upload = multer({
   },
 });
 
+router.get('/users/register', user_controller.register_get);
 router.post('/users/register', user_controller.register_post);
 router.get('/users/login', user_controller.login_get);
 router.post('/users/login', user_controller.login_post);
@@ -31,5 +32,9 @@ router.get('/users/:id/avatar', user_controller.avatar_get);
 // FOR DEV PURPOSES ONLY
 router.get('/users', user_controller.all_get);
 router.delete('/users', user_controller.all_delete);
+
+router.get('*', (req, res) => {
+  res.render('404');
+});
 
 module.exports = router;

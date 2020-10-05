@@ -1,23 +1,5 @@
 console.log('Client side scripts.js is running.');
 
-// Handle login & register forms
-const registerForm = document.getElementById('register');
-if (registerForm) {
-  registerForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-
-    const data = new URLSearchParams(new FormData(registerForm));
-    const url = `${window.location.origin}/users/register`;
-
-    fetch(url, {
-      method: 'POST',
-      body: data,
-    })
-      .then(() => window.location.href = '/drinks')
-      .catch(err => console.log('Something went wrong: ' + err.message))
-  })
-}
-
 // Handle drink deletion
 const deleteButtons = document.querySelectorAll('.delete-btn');
 if (deleteButtons.length > 0) {

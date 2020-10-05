@@ -24,11 +24,10 @@ app.use(express.urlencoded({
 }));
 app.use(express.json()); // Configure express to auto-parse JSON
 app.use(cookieParser());
-app.use(userRouter);
 app.use(drinkRouter);
 app.use(logRouter);
 app.use(statsRouter);
-app.use(authRouter);  // Must come last - contains 404 route
+app.use(userRouter);  // Must come last - contains 404 route
 
 app.listen(port, () => {
   console.log('App is running on port ' + port);
