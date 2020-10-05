@@ -1,10 +1,11 @@
 exports.get = (req, res) => {
   const today = new Date().setHours(0, 0, 0, 0); // Set to midnight to match log date
-  const data = getData(today, req.user.log, req.user.ownDrinks);
+  const data = getDailyData(today, req.user.log, req.user.ownDrinks);
+  const weeklyData = getWeeklyData(today, req.user.log, req.user.ownDrinks);
   res.render('stats', { data });
 };
 
-const getData = (today, log, userDrinks) => {
+const getDailyData = (today, log, userDrinks) => {
   const dayInMS = (1000 * 60 * 60 * 24);
   const startPoint = today - (dayInMS * 7);
   const result = {
@@ -24,10 +25,8 @@ const getData = (today, log, userDrinks) => {
       spend: 0,
     };
 
-    const daysLog = l7dRecords.find(record => {
-      const recordDate = record.date;
-      return +recordDate === +refDate;  // NB have to coerce to numbers
-    });
+    // Look for existing log (NB have to coerce to numbers)
+    const daysLog = l7dRecords.find(record => +record.date === +refDate);
 
     if (daysLog) {
       daysLog.drinks.forEach(drink => {
@@ -47,5 +46,47 @@ const getData = (today, log, userDrinks) => {
       });
     }
   }
+  return result;
+};
+
+const getWeeklyData = (today, log, userDrinks) => {
+  const weekInMS = (1000 * 60 * 60 * 24 * 7);
+  const startPoint = today - (weekInMS * 4);
+  const result = {
+    weekly: {},
+  };
+
+  const l4wRecords = log.filter(record => record.date.getTime() >= startPoint);
+
+  for (let i = 1; i <= 4; i++) {
+    const refDate = new Date(today - (weekInMS * i));
+
+    result.weekly[i] = {
+      week: refDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }),
+      quantity: 0,
+      units: 0,
+      spend: 0,
+    };
+
+    // Look for existing logs
+    const weeksLog = l4wRecords.find(record => {
+      return (+record.date >= +refDate && +record.date < (+refDate + weekInMS));
+    });
+
+    if (weeksLog) {
+      weeksLog.drinks.forEach(drink => {
+        result.weekly[i].quantity += drink.quantity;
+
+        for (let d of userDrinks) {
+          if (d.id === drink.drinkId.toString()) {
+            result.weekly[i].units += Math.round(d.units * drink.quantity);
+            result.weekly[i].spend += Math.round(d.price * drink.quantity);
+            break;
+          }
+        }
+      });
+    }
+  }
+  console.log(result);
   return result;
 };
