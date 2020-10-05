@@ -1,7 +1,9 @@
 exports.get = (req, res) => {
   const today = new Date().setHours(0, 0, 0, 0); // Set to midnight to match log date
-  const data = getDailyData(today, req.user.log, req.user.ownDrinks);
-  const weeklyData = getWeeklyData(today, req.user.log, req.user.ownDrinks);
+  const data = {
+    l7d: getDailyData(today, req.user.log, req.user.ownDrinks),
+    l4w: getWeeklyData(today, req.user.log, req.user.ownDrinks),
+  };
   res.render('stats', { data });
 };
 
@@ -35,11 +37,11 @@ const getDailyData = (today, log, userDrinks) => {
 
         for (let d of userDrinks) {
           if (d.id === drink.drinkId.toString()) {
-            result.daily[i].units += (d.units * drink.quantity);
-            result.total.units += (d.units * drink.quantity);
+            result.daily[i].units += Math.round(d.units * drink.quantity);
+            result.total.units += Math.round(d.units * drink.quantity);
 
-            result.daily[i].spend += (d.price * drink.quantity);
-            result.total.spend += (d.price * drink.quantity);
+            result.daily[i].spend += Math.round(d.price * drink.quantity);
+            result.total.spend += Math.round(d.price * drink.quantity);
             break;
           }
         }
