@@ -4,7 +4,7 @@ const { Drink } = require('../models/drinks.js');
 // (see Udemy course)
 exports.all_get = async(req, res) => {
   try {
-    let drinks = req.user.ownDrinks;
+    let drinks = req.user.ownDrinks || [];
 
     const category = req.query.cat;
     const sortBy = req.query.sortBy;
