@@ -2,17 +2,14 @@ const sharp = require('sharp');
 const path = require('path');
 const User = require('../models/users.js');
 
-exports.index = async(req, res) => {
+exports.register_post = async(req, res) => {
   try {
     const newUser = new User(req.body);
     await newUser.save();
 
     const token = await newUser.genAuthToken();
     res.cookie('auth_token', token);
-
-    // res.status(201).send({ newUser, token });
-    // res.sendFile(path.resolve(__dirname, '..', '..', 'templates', 'views', 'private.html'));
-    res.render('drinks');
+    res.send();
   } catch (err) {
     res.status(400).send({ error: err.message });
   }

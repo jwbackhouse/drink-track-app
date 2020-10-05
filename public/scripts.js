@@ -1,10 +1,28 @@
 console.log('Client side scripts.js is running.');
 
+// Handle login & register forms
+const registerForm = document.getElementById('register');
+if (registerForm) {
+  registerForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const data = new URLSearchParams(new FormData(registerForm));
+    const url = `${window.location.origin}/users/register`;
+
+    fetch(url, {
+      method: 'POST',
+      body: data,
+    })
+      .then(() => window.location.href = '/drinks')
+      .catch(err => console.log('Something went wrong: ' + err.message))
+  })
+}
+
 // Handle drink deletion
 const deleteButtons = document.querySelectorAll('.delete-btn');
 if (deleteButtons.length > 0) {
   deleteButtons.forEach(button => {
-    button.addEventListener('click', async(e) => {
+    button.addEventListener('click', (e) => {
       const id = e.target.id;
       const url = window.location.href + '/' + id;
 
@@ -13,7 +31,7 @@ if (deleteButtons.length > 0) {
           credentials: 'same-origin',
         })
         .then(() => window.location.reload())
-        .catch(err => alert('Something went wrong:' + err.message));
+        .catch(err => alert('Something went wrong: ' + err.message));
     });
   });
 }
@@ -21,12 +39,12 @@ if (deleteButtons.length > 0) {
 // Handle PUT request for updating drinks
 const updateDrinkForm = document.getElementById('update-drink');
 if (updateDrinkForm) {
-  updateDrinkForm.addEventListener('submit', async(e) => {
+  updateDrinkForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const data = new URLSearchParams(new FormData(updateDrinkForm));
 
     const url = window.location.href;
-    await fetch(url, {
+    fetch(url, {
         method: 'PUT',
         credentials: 'same-origin',
         body: data,
@@ -39,12 +57,12 @@ if (updateDrinkForm) {
 // Handle POST request for adding drink
 const addDrinkForm = document.getElementById('add-drink');
 if (addDrinkForm) {
-  addDrinkForm.addEventListener('submit', async(e) => {
+  addDrinkForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const data = new URLSearchParams(new FormData(addDrinkForm));
 
     const url = window.location.href;
-    await fetch(url, {
+    fetch(url, {
         method: 'POST',
         credentials: 'same-origin',
         body: data,
@@ -54,7 +72,7 @@ if (addDrinkForm) {
   });
 }
 
-// Handle date picker
+// Handle log form
 const logForm = document.getElementById('log-form');
 if (logForm) {
   const datePicker = logForm.querySelector('#date');
@@ -73,7 +91,7 @@ if (logForm) {
     triggerChange(datePicker);
   });
 
-  datePicker.addEventListener('change', async(e) => {
+  datePicker.addEventListener('change', async (e) => {
     try {
       const date = e.target.value;
       const url = `${window.location.href}/${date}`;
@@ -93,14 +111,14 @@ if (logForm) {
     }
   });
 
-  logForm.addEventListener('submit', async(e) => {
+  logForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
     try {
       const data = new URLSearchParams(new FormData(logForm));
-
       const url = window.location.href;
-      await fetch(url, {
+
+      fetch(url, {
         method: 'POST',
         credentials: 'same-origin',
         body: data,
