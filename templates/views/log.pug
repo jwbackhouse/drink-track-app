@@ -1,0 +1,56 @@
+extends ../layouts/layout
+
+
+block content
+  // Find matching log
+  -
+    let today = new Date().toISOString().substr(0, 10)
+    const daysLog = log.find(entry => {
+      const entryDate = entry.date.toISOString().substr(0, 10);
+      const refDate = date ? date : today;
+      return entryDate === refDate;
+    })
+
+  h1 Track your drinking
+  form#log-form(method='POST' action='')
+    div.form-group
+      div
+        label(for='date') Date
+        input(type='date' id='date' name='date' value=(date ? date : today))
+        button(id='prev-day') <<
+        button(id='next-day') >>
+      label(for='no-drink') Nothing today?
+      input(type='checkbox' id='checkbox')
+
+      if error
+        p Doh, something went wrong
+
+      else
+
+        // Render category titles
+        - const categories = [...new Set(userDrinks.map(drink => drink.category))];
+        each cat in categories
+          h3= cat[0].toUpperCase() + cat.slice(1).toLowerCase()
+
+          // Render userDrinks
+          - const drinks = userDrinks.filter(drink => drink.category === cat)
+          - drinks.sort((a,b) => a.name < b.name ? -1 : 1);
+          each drink in drinks
+            -
+              const description = drink.description ? ` - ${drink.description.toLowerCase()}` : ''
+              const url = `/drinks/${drink._id}`
+              let qty = '';
+              // Get existing log qty
+              if (daysLog) {
+                daysLog.drinks.forEach(log => {
+                  if (log.drinkId.toString() === drink._id.toString()) {
+                    qty = log.quantity === 0 ? '' : log.quantity;
+                  }
+                })
+              }
+            label(for=drink._id)
+              p.drink-name #{drink.name}
+              em #{drink.description} (#{drink.units} units)
+            input(type='number' name=drink._id id=('ID'+drink._id) class='drink' min=0 value=qty)
+
+      button.submit(type='submit') Save

@@ -1,28 +1,44 @@
 const sharp = require('sharp');
 const User = require('../models/users.js');
 
-exports.index = async(req, res) => {
+exports.register_get = (req, res) => {
+  res.render('register_form', { title: 'Register' });
+};
+
+exports.register_post = async(req, res) => {
   try {
     const newUser = new User(req.body);
-    const token = await newUser.genAuthToken();
-
     await newUser.save();
 
-    res.status(201).send({ newUser, token });
+    const token = await newUser.genAuthToken();
+    res.cookie('auth_token', token);
+    res.redirect('/drinks');
   } catch (err) {
-    res.status(400).send({ error: err.message });
+    res.render('register_form', {
+      title: 'Register',
+      email: req.body.email,
+      error: err.message,
+    });
   }
 };
 
-exports.login = async(req, res) => {
+exports.login_get = (req, res) => {
+  res.render('login_form', { title: 'Login' });
+};
+
+exports.login_post = async(req, res) => {
   try {
     const user = await User.findUserCreds(req.body.email, req.body.password);
     const token = await user.genAuthToken();
 
-    res.send({ user, token });
+    res.cookie('auth_token', token);
+    res.redirect('/drinks');
   } catch (err) {
-    console.log(err);
-    res.status(400).send({ error: err.message });
+    res.render('login_form', {
+      title: 'Login',
+      email: req.body.email,
+      error: err.message,
+    });
   }
 };
 
@@ -34,6 +50,7 @@ exports.logout = async(req, res) => {
     });
     await req.user.save();
 
+    console.log('logged out');
     res.send();
   } catch (err) {
     res.status(500).send({ error: err.message });

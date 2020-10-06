@@ -1,5 +1,10 @@
 const mongoose = require('mongoose');
 
+const opts = {
+  toJSON: { virtuals: true }, // pass virtual fields into Express
+  toObject: { virtuals: true },
+};
+
 const drinkSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -34,6 +39,10 @@ const drinkSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
   },
+}, opts);
+
+drinkSchema.virtual('units').get(function() {
+  return Math.round((this.abv * this.size / 1000) * 10) / 10;
 });
 
 const Drink = mongoose.model('Drink', drinkSchema);

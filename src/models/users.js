@@ -3,16 +3,19 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { Drink, drinkSchema } = require('./drinks.js');
+const { logSchema } = require('./log.js');
 
 const opts = {
   timestamps: true,
+  toJSON: { virtuals: true }, // pass virtual fields into Express
+  toObject: { virtuals: true },
 };
 
 // NB need to explicitly create schema in order to use middleware
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
+    // required: true,
     trim: true,
   },
   password: {
@@ -42,14 +45,8 @@ const userSchema = new mongoose.Schema({
     },
   }],
   ownDrinks: [drinkSchema],
+  log: [logSchema],
 }, opts);
-
-// // Configure virtual field to link drinks with users
-// userSchema.virtual('drinks', {
-//   ref: 'Drink',
-//   localField: '_id',
-//   foreignField: 'owner',
-// });
 
 // Create instance method (i.e. on individual users) to generate JWT
 userSchema.methods.genAuthToken = async function() {
@@ -98,25 +95,15 @@ userSchema.pre('save', async function(next) {
     // Add 'system drinks' to user document when user created
     if (user.isNew) {
       const systemDrinks = await Drink.find({});
-      systemDrinks.forEach(drink => user.ownDrinks.push(drink));
+      if (systemDrinks) {
+        systemDrinks.forEach(drink => user.ownDrinks.push(drink));
+      }
     }
 
     next();
   }
   catch (err) {
     console.log(err.message);
-  }
-});
-
-// Delete user's drinks when their account is deleted
-userSchema.pre('remove', async function(next) {
-  try {
-    const user = this;
-    await Drink.deleteMany({ owner: user._id });
-    next();
-  }
-  catch (err) {
-    console.log(err);
   }
 });
 

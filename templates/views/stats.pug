@@ -1,0 +1,40 @@
+extends ../layouts/layout
+
+block content
+  h1 The scores on the doors
+
+  h2 Last 7 days
+  // This week by day
+  // Last week + diffs
+  // Separate tables for units / mix / spend
+
+  table.last-week
+    thead
+      tr
+        th Day
+        th Units
+        th Spend
+      tr
+        td TOTAL
+        td= data.l7d.total.units
+        td= `£${data.l7d.total.spend}`
+
+      each entry in data.l7d.daily
+        tr
+          td= entry.day
+          td= entry.units
+          td= `£${entry.spend}`
+
+  h2 Last 28 days
+  table.last-month
+    thead
+      tr
+        th W/C
+        th Units
+        th Spend
+
+      each entry in data.l4w.weekly
+        tr
+          td= entry.week
+          td= entry.units
+          td= `£${entry.spend}`
