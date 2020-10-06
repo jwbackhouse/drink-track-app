@@ -15,7 +15,7 @@ exports.post = async(req, res) => {
   try {
     if (data.date === '') throw new Error('Please choose a date');
 
-    let keys = Object.keys(req.body);
+    let keys = Object.keys(data);
     let IDs = keys.slice(1);
     const loggedDrinks = createDrinkArr(IDs, data);
     const log = { date: data.date, drinks: loggedDrinks };
@@ -24,6 +24,7 @@ exports.post = async(req, res) => {
       return entry.date.toISOString().slice(0, 10) === log.date;
     });
 
+    // Update existing log if exists
     if (matchIdx !== -1) {
       const existingDrinks = existingLog[matchIdx].drinks;
 
@@ -36,6 +37,7 @@ exports.post = async(req, res) => {
           existingDrinks[drinkIdx].quantity = +loggedDrinks[i].quantity;
       }
     } else {
+      // Create new log
       const newLog = new Log(log);
       req.user.log.push(newLog);
     }
@@ -43,6 +45,7 @@ exports.post = async(req, res) => {
     await req.user.save();
     res.render('log', {
       title: 'Log your drinks',
+      date: data.date,
       userDrinks: req.user.ownDrinks,
       log: req.user.log,
     });
@@ -50,6 +53,7 @@ exports.post = async(req, res) => {
     console.log(err.message);
     res.render('log', {
       title: 'Log your drinks',
+      date: data.date,
       userDrinks: req.user.ownDrinks,
       log: req.user.log,
       error: err.message

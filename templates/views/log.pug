@@ -4,16 +4,17 @@ extends ../layouts/layout
 block content
   -
     let today = new Date().toISOString().substr(0, 10)
-    const todaysLog = log.find(entry => {
+    const daysLog = log.find(entry => {
       const entryDate = entry.date.toISOString().substr(0, 10);
-      return entryDate === today;
+      const refDate = date ? date : today;
+      return entryDate === refDate;
     })
   h1 Track your drinking
   form#log-form(method='POST' action='')
     div.form-group
       div
         label(for='date') Date
-        input(type='date' id='date' name='date' value=today)
+        input(type='date' id='date' name='date' value=(date ? date : today))
         button(id='prev-day') <<
         button(id='next-day') >>
       label(for='no-drink') Nothing today?
@@ -34,8 +35,8 @@ block content
               const description = drink.description ? ` - ${drink.description.toLowerCase()}` : ''
               const url = `/drinks/${drink._id}`
               let qty = '';
-              if (todaysLog) {
-                todaysLog.drinks.forEach(log => {
+              if (daysLog) {
+                daysLog.drinks.forEach(log => {
                   if (log.drinkId.toString() === drink._id.toString()) qty = log.quantity;
                 })
               }
