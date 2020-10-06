@@ -24,23 +24,25 @@ if (logForm) {
   const datePicker = logForm.querySelector('#date');
   const nextDayBtn = logForm.querySelector('#next-day');
   const prevDayBtn = logForm.querySelector('#prev-day');
+  const checkbox = logForm.querySelector('#checkbox');
+  const inputFields = logForm.querySelectorAll('.drink');
 
   nextDayBtn.addEventListener('click', (e) => {
     e.preventDefault();
-    datePicker.stepUp();
-    triggerChange(datePicker);
+    handleDateStep('up');
   });
 
   prevDayBtn.addEventListener('click', (e) => {
     e.preventDefault();
-    datePicker.stepDown();
-    triggerChange(datePicker);
+    handleDateStep('down');
   });
 
   datePicker.addEventListener('change', async (e) => {
     try {
       const date = e.target.value;
       const url = `${window.location.href}/${date}`;
+
+      checkbox.checked = false;
 
       const response = await fetch(url, {
         credentials: 'same-origin',
@@ -57,46 +59,42 @@ if (logForm) {
     }
   });
 
-  // logForm.addEventListener('submit', (e) => {
-  //   e.preventDefault();
+  checkbox.addEventListener('change', (e) => {
+    if (checkbox.checked) {
+      for (let input of inputFields) {
+        input.value = 0;
+      }
+    }
+  });
 
-  //   try {
-  //     const data = new URLSearchParams(new FormData(logForm));
-  //     const url = window.location.href;
+  // Helper functions
+  const handleDateStep = (direction) => {
+    direction === 'up' ? datePicker.stepUp() : datePicker.stepDown();
+    triggerChange(datePicker);
+  };
 
-  //     fetch(url, {
-  //       method: 'POST',
-  //       credentials: 'same-origin',
-  //       body: data,
-  //     });
-  //   } catch (err) {
-  //     alert('Something went wrong:' + err.message);
-  //   }
-  // });
+  const triggerChange = (target) => {
+    const event = new Event('change');
+    target.dispatchEvent(event);
+  };
+
+  const updateInputs = (array, hasData) => {
+    if (!hasData) {
+      inputFields.forEach(input => input.value = '');
+      return;
+    }
+    for (let input of inputFields) {
+      for (let drink of array) {
+        if (drink.drinkId === input.id.slice(2)) {
+          input.value = drink.quantity;
+          break;
+        }
+        input.value = '';
+      }
+    }
+  };
 }
 
-// Trigger change event on stepUp/stepDown
-const triggerChange = (target) => {
-  const event = new Event('change');
-  target.dispatchEvent(event);
-};
-
-const updateInputs = (array, hasData) => {
-  const allInputEls = logForm.querySelectorAll('.drink');
-  if (!hasData) {
-    allInputEls.forEach(input => input.value = '');
-    return;
-  }
-  for (let input of allInputEls) {
-    for (let drink of array) {
-      if (drink.drinkId === input.id.slice(2)) {
-        input.value = drink.quantity;
-        break;
-      }
-      input.value = '';
-    }
-  }
-};
 
 // Handle logout click
 const logoutLink = document.getElementById('logout');
