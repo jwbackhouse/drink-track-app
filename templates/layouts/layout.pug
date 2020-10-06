@@ -6,27 +6,28 @@ html
     meta(name='viewport' content='width=device-width, initial-scale=1')
     link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js')
-    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js')
+    link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css", integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z", crossorigin="anonymous")
     link(rel='stylesheet', href='/styles/style.css')
   body
     include ../partials/header
 
-    div(class='container-fluid')
+    div(class='container')
       div(class='row')
-        div(class='col-sm-2')
-          block sidebar
-            ul(class='sidebar-nav')
-              li
-                a(href='/stats') Stats
-              li
-                a(href='/drinks') Drinks
-              hr
-              li
-                a(href='/log') Log drinks
-              li
-                a(href='/add-drink') Add a drink
+        nav(class='col-md-3 col-lg-2 d-md-block bg-light sidebar collapse')
+          div(class='sidebar-sticky pt-3')
+            block sidebar
+              ul(class='nav flex-column')
+                li(class='nav-item')
+                  a(class='nav-link' href='/stats') Stats
+                li
+                  a(class='nav-link' href='/drinks') Drinks
+                hr
+                li
+                  a(class='nav-link' href='/log') Log drinks
+                li
+                  a(class='nav-link' href='/add-drink') Add a drink
 
-        div(class='col-sm-10')
+        div(class='col-md-9 ml-sm-auto col-lg-10 px-md-4')
           block content
 
     include ../partials/footer
