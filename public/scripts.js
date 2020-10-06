@@ -57,22 +57,22 @@ if (logForm) {
     }
   });
 
-  logForm.addEventListener('submit', (e) => {
-    e.preventDefault();
+  // logForm.addEventListener('submit', (e) => {
+  //   e.preventDefault();
 
-    try {
-      const data = new URLSearchParams(new FormData(logForm));
-      const url = window.location.href;
+  //   try {
+  //     const data = new URLSearchParams(new FormData(logForm));
+  //     const url = window.location.href;
 
-      fetch(url, {
-        method: 'POST',
-        credentials: 'same-origin',
-        body: data,
-      });
-    } catch (err) {
-      alert('Something went wrong:' + err.message);
-    }
-  });
+  //     fetch(url, {
+  //       method: 'POST',
+  //       credentials: 'same-origin',
+  //       body: data,
+  //     });
+  //   } catch (err) {
+  //     alert('Something went wrong:' + err.message);
+  //   }
+  // });
 }
 
 // Trigger change event on stepUp/stepDown

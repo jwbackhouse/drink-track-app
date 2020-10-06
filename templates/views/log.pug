@@ -9,7 +9,7 @@ block content
       return entryDate === today;
     })
   h1 Track your drinking
-  form#log-form
+  form#log-form(method='POST' action='')
     div.form-group
       div
         label(for='date') Date
@@ -44,4 +44,4 @@ block content
               em #{drink.description} (#{drink.units} units)
             input(type='number' name=drink._id id=('ID'+drink._id) class='drink' min=0 value=qty)
 
-      input(type='submit' value='Go')
+      button.submit(type='submit') Save

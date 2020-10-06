@@ -2,6 +2,7 @@ const { Log } = require('../models/log.js');
 
 exports.get = (req, res) => {
   res.render('log', {
+    title: 'Log your drinks',
     userDrinks: req.user.ownDrinks,
     log: req.user.log,
   });
@@ -10,7 +11,6 @@ exports.get = (req, res) => {
 exports.post = async(req, res) => {
   const existingLog = req.user.log;
   const data = req.body;
-  console.log('post running')
 
   try {
     if (data.date === '') throw new Error('Please choose a date');
@@ -18,7 +18,6 @@ exports.post = async(req, res) => {
     let keys = Object.keys(req.body);
     let IDs = keys.slice(1);
     const loggedDrinks = createDrinkArr(IDs, data);
-    console.log(loggedDrinks)
     const log = { date: data.date, drinks: loggedDrinks };
 
     const matchIdx = existingLog.findIndex(entry => {
@@ -32,7 +31,6 @@ exports.post = async(req, res) => {
         const drinkIdx = existingDrinks.findIndex(drink => {
           return drink.drinkId.toString() === loggedDrinks[i].drinkId.toString();
         });
-        console.log('loggedDrinks' + i + '--' + loggedDrinks[i].quantity);
         drinkIdx === -1 ?
           existingDrinks.push(loggedDrinks[i]) :
           existingDrinks[drinkIdx].quantity = +loggedDrinks[i].quantity;
@@ -43,10 +41,19 @@ exports.post = async(req, res) => {
     }
 
     await req.user.save();
-    res.send();
+    res.render('log', {
+      title: 'Log your drinks',
+      userDrinks: req.user.ownDrinks,
+      log: req.user.log,
+    });
   } catch (err) {
     console.log(err.message);
-    res.render('log', { data, error: err.message });
+    res.render('log', {
+      title: 'Log your drinks',
+      userDrinks: req.user.ownDrinks,
+      log: req.user.log,
+      error: err.message
+    });
   }
 };
 
