@@ -1,35 +1,40 @@
 extends ../layouts/layout
 
 block content
-  h1 The bar
-  p Here are all your drinks
+  div(class='pt-2 pb-5')
+    div(class='text-center')
+      h1.h2 The bar
+      p.lead Here are the drinks you can track. Add or edit them as you wish.
 
-  if error
-    p Doh, something went wrong.
+    if error
+      p Doh, something went wrong.
 
-  else if data
-    if data.length > 0
-      - const categories = [...new Set(data.map(drink => drink.category))].sort();
-      each cat in categories
-        h3= cat[0].toUpperCase() + cat.slice(1).toLowerCase()
-        ul
-          -
-            const drinks = data.filter(drink => drink.category === cat)
-            drinks.sort((a,b) => a.name < b.name ? -1 : 1);
-          each drink in drinks
-            - const description = drink.description ? ` - ${drink.description.toLowerCase()}` : ''
-            - const url = `/drinks/${drink._id}`
-            li
-              a(href=url) #{drink.name}
-              em #{description}
-              |
-              button(id=drink._id class='delete-btn') Delete
+    else if data
+      if data.length > 0
+        - const categories = [...new Set(data.map(drink => drink.category))].sort();
+        each cat in categories
+          h4(class='d-flex justify-content-center align-items-center mb-2 mt-4')= cat[0].toUpperCase() + cat.slice(1).toLowerCase()
+          ul(class='list-group mb-3')
+            -
+              const drinks = data.filter(drink => drink.category === cat)
+              drinks.sort((a,b) => a.name < b.name ? -1 : 1);
+            each drink in drinks
+              // - const description = drink.description ? ` - ${drink.description.toLowerCase()}` : ''
+              - const url = `/drinks/${drink._id}`
+              li(class='list-group-item d-flex justify-content-between lh-condensed')
+                div
+                  h6(class='my-0')
+                    a(href=url) #{drink.name}
+                  small #{drink.description},
+                  small.text-muted  #{drink.abv}%
+                button(id=drink._id class='btn btn-sm btn-outline-secondary') Delete
 
-      a(href='/add-drink') Add a drink
+        div(class='row justify-content-center')
+          a(href='/add-drink' class='btn btn-lg btn-primary mt-3' role='button') Add a drink
+
+      else
+        p No drinks added yet
+        a(href='/add-drink') Add a drink
 
     else
-      p No drinks added yet
-      a(href='/add-drink') Add a drink
-
-  else
-    p Something unusual has gone wrong.
+      p Something unusual has gone wrong.
