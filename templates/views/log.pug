@@ -2,6 +2,7 @@ extends ../layouts/layout
 
 
 block content
+  // Find matching log
   -
     let today = new Date().toISOString().substr(0, 10)
     const daysLog = log.find(entry => {
@@ -9,7 +10,7 @@ block content
       const refDate = date ? date : today;
       return entryDate === refDate;
     })
-    console.log('daysLog', daysLog)
+
   h1 Track your drinking
   form#log-form(method='POST' action='')
     div.form-group
@@ -25,17 +26,21 @@ block content
         p Doh, something went wrong
 
       else
+
+        // Render category titles
         - const categories = [...new Set(userDrinks.map(drink => drink.category))];
         each cat in categories
           h3= cat[0].toUpperCase() + cat.slice(1).toLowerCase()
-          -
-            const drinks = userDrinks.filter(drink => drink.category === cat)
-            drinks.sort((a,b) => a.name < b.name ? -1 : 1);
+
+          // Render userDrinks
+          - const drinks = userDrinks.filter(drink => drink.category === cat)
+          - drinks.sort((a,b) => a.name < b.name ? -1 : 1);
           each drink in drinks
             -
               const description = drink.description ? ` - ${drink.description.toLowerCase()}` : ''
               const url = `/drinks/${drink._id}`
               let qty = '';
+              // Get existing log qty
               if (daysLog) {
                 daysLog.drinks.forEach(log => {
                   if (log.drinkId.toString() === drink._id.toString()) {
@@ -44,7 +49,7 @@ block content
                 })
               }
             label(for=drink._id)
-              #{drink.name}
+              p.drink-name #{drink.name}
               em #{drink.description} (#{drink.units} units)
             input(type='number' name=drink._id id=('ID'+drink._id) class='drink' min=0 value=qty)
 
