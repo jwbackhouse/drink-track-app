@@ -9,6 +9,7 @@ block content
       const refDate = date ? date : today;
       return entryDate === refDate;
     })
+    console.log('daysLog', daysLog)
   h1 Track your drinking
   form#log-form(method='POST' action='')
     div.form-group
@@ -37,7 +38,9 @@ block content
               let qty = '';
               if (daysLog) {
                 daysLog.drinks.forEach(log => {
-                  if (log.drinkId.toString() === drink._id.toString()) qty = log.quantity;
+                  if (log.drinkId.toString() === drink._id.toString()) {
+                    qty = log.quantity === 0 ? '' : log.quantity;
+                  }
                 })
               }
             label(for=drink._id)
