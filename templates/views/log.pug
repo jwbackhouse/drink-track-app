@@ -2,6 +2,18 @@ extends ../layouts/layout
 
 
 block content
+  script.
+    $(document).ready(function(){
+      var date_input=$('input[name="date"]'); //our date input has the name "date"
+      var options={
+        format: 'mm/dd/yyyy',
+        todayHighlight: true,
+        autoclose: true,
+      };
+      date_input.datepicker(options);
+    })
+
+
   // Find matching log
   -
     let today = new Date().toISOString().substr(0, 10)
@@ -16,7 +28,7 @@ block content
     div.form-group
       div
         label(for='date') Date
-        input(type='date' id='date' name='date' value=(date ? date : today))
+        input(type='text' data-provide='datepicker' id='date' name='date' value=(date ? date : today))
         button(id='prev-day') <<
         button(id='next-day') >>
       label(for='no-drink') Nothing today?
