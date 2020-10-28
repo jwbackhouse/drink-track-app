@@ -2,37 +2,37 @@ extends ../layouts/layout
 
 block content
   h1= title
-  form(id=id method='POST' action='')
-    div(class='form-group row mt-4')
-      label(for='name' class='col-sm-2 col-form-label') Name:
-      div(class='col-sm-6')
-        input(id='name' class='form-control' type='text' placeholder='Name' name='name' value=(undefined===drink ? '' : drink.name))
-      div(class='w-100 my-2')
-      label(for='description' class='col-sm-2 col-form-label') Description:
-      div(class='col-sm-6')
-        input(id='description' class='form-control' type='text' placeholder='(Optional)' name='description' value=(undefined===drink ? '' : drink.description))
-      div(class='w-100 my-2')
-      label(for='category' class='col-sm-2 col-form-label') Category:
-      div(class='col-sm-6')
-        select(id='cat' class='form-control' name='category' required)
-            option(value='beer' selected=(undefined===drink ? '' : drink.category==='beer')) Beer
-            option(value='wine' selected=(undefined===drink ? '' : drink.category==='wine')) Wine
-            option(value='cider' selected=(undefined===drink ? '' : drink.category==='cider')) Cider
-            option(value='spirits' selected=(undefined===drink ? '' : drink.category==='spirits')) Spirits
-            option(value='other' selected=(undefined===drink ? '' : drink.category==='other')) Other
-      div(class='w-100 my-2')
-      label(for='abv' class='col-sm-2 col-form-label') ABV:
-      div(class='col-sm-3')
-        input(id='abv' class='form-control' type='number' placeholder=0.00 name='abv' value=(undefined===drink ? '' : drink.abv) step='0.01')
-      div(class='w-100 my-2')
-      label(for='size' class='col-sm-2 col-form-label') Size (ml):
-      div(class='col-sm-3')
-        input(id='size' class='form-control' type='number' placeholder=0 name='size' value=(undefined===drink ? '' : drink.size))
-      div(class='w-100 my-2')
-      label(for='price' class='col-sm-2 col-form-label') Price:
-      div(class='col-sm-3')
-        input(id='price' class='form-control' type='number' placeholder=0 name='price' value=(undefined===drink ? '' : drink.price) step='0.1')
+  form(id=id class='form-drinks mt-4' method='POST' action='')
+    div(class='row')
+      div(class='col-sm-7')
+        div(class='form-label-group')
+          input(id='name' class='form-control' type='text' placeholder='Name' name='name' value=(undefined===drink ? '' : drink.name))
+          label(for='name') Name
+        div(class='form-label-group')
+          input(id='description' class='form-control' type='text' placeholder='(Optional)' name='description' value=(undefined===drink ? '' : drink.description))
+          label(for='description') Description
+        div(class='form-label-group')
+          // label(for='category') Category:
+          select(id='cat' class='form-control' name='category' required)
+              option(value='beer' selected=(undefined===drink ? '' : drink.category==='beer')) Beer
+              option(value='wine' selected=(undefined===drink ? '' : drink.category==='wine')) Wine
+              option(value='cider' selected=(undefined===drink ? '' : drink.category==='cider')) Cider
+              option(value='spirits' selected=(undefined===drink ? '' : drink.category==='spirits')) Spirits
+              option(value='other' selected=(undefined===drink ? '' : drink.category==='other')) Other
+              option(value='' disabled selected=(undefined===drink ? true : false)) Select a category
+      div(class='col-sm-5')
+        div(class='form-label-group')
+          input(id='abv' class='form-control' type='number' placeholder=0.00 name='abv' value=(undefined===drink ? '' : drink.abv) step='0.01')
+          label(for='abv') ABV (%)
+        div(class='form-label-group')
+          input(id='size' class='form-control' type='number' placeholder=0 name='size' value=(undefined===drink ? '' : drink.size))
+          label(for='size') Size (ml)
+        div(class='form-label-group')
+          input(id='price' class='form-control' type='number' placeholder=0 name='price' value=(undefined===drink ? '' : drink.price) step='0.1')
+          label(for='price') Price (£)
     button.btn.btn-primary(type='submit') #{undefined===buttonCopy ? 'Add' : buttonCopy}
 
   if error
     p= error
+
+      // div(class='w-100 my-2')
