@@ -1,22 +1,10 @@
 extends ../layouts/layout
 
-
 block content
-  script.
-    $(document).ready(function(){
-      var date_input=$('input[name="date"]'); //our date input has the name "date"
-      var options={
-        format: 'mm/dd/yyyy',
-        todayHighlight: true,
-        autoclose: true,
-      };
-      date_input.datepicker(options);
-    })
-
-
   // Find matching log
   -
-    let today = new Date().toISOString().substr(0, 10)
+    const today = new Date().toISOString().substr(0, 10);
+
     const daysLog = log.find(entry => {
       const entryDate = entry.date.toISOString().substr(0, 10);
       const refDate = date ? date : today;
@@ -26,11 +14,9 @@ block content
   h1 Track your drinking
   form#log-form(method='POST' action='')
     div.form-group
-      div
+      div(id='datepicker-group' class='input-group date')
         label(for='date') Date
-        input(type='text' data-provide='datepicker' id='date' name='date' value=(date ? date : today))
-        button(id='prev-day') <<
-        button(id='next-day') >>
+        input(type='text' class='form-control' id='date' data-provide='datepicker')
       label(for='no-drink') Nothing today?
       input(type='checkbox' id='checkbox')
 
@@ -66,3 +52,13 @@ block content
             input(type='number' name=drink._id id=('ID'+drink._id) class='drink' min=0 value=qty)
 
       button.submit(type='submit') Save
+  script.
+    $(document).ready(function(){
+      $('#date').datepicker({
+        format: 'd-mm-yyyy',
+        autoclose: true,
+        todayHighlight: true,
+        todayBtn: 'linked',
+        language: 'en-GB',
+      });
+    });
